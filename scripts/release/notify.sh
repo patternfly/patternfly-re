@@ -1,0 +1,118 @@
+#!/bin/sh
+
+default()
+{
+  PATH=/bin:/usr/bin:/usr/local/bin:$PATH
+  export PATH
+  
+  SCRIPT=`basename $0`
+  SCRIPT_DIR=`dirname $0`
+  SCRIPT_DIR=`cd $SCRIPT_DIR; pwd`
+
+  . $SCRIPT_DIR/../_env.sh
+  . $SCRIPT_DIR/../_common.sh
+  . $SCRIPT_DIR/_common.sh
+
+  TMP_DIR=/tmp/$SCRIPT.$$
+  TMP_FILE=notify.txt
+}
+
+# Send email notifying users a new release is available
+#
+# $1: Repo slug
+# $2: Subject
+# $3: Email list
+email()
+{
+  echo "*** Notifying email list"
+  mkdir -p $TMP_DIR
+
+cat > $TMP_DIR/$TMP_FILE <<- EEOOFF
+The UXD team is proud to announce the $VERSION release of $2. This release includes the following changes.
+
+$RELEASE_NOTES
+
+Check out the $2 $VERSION Release Notes for more details:
+https://github.com/$1/releases/tag/$RELEASE_TAG_PREFIX$VERSION
+
+Thanks to everyone who participated in this release (both directly and indirectly) - your contributions are what keeps pushing PatternFly forward!
+
+- the PatternFly team
+EEOOFF
+
+  SUBJECT="The Patternfly $VERSION release is now available"
+  cat $TMP_DIR/$TMP_FILE | mail -s "$2" "$3"
+  rm -rf $TMP_DIR
+}
+
+# Fetch release notes from GitHub release
+#
+# $1: Repo slug
+fetch_notes()
+{
+  echo "*** Fetch notes"
+
+  RELEASE_NOTES=`curl -s https://api.github.com/repos/$1/releases/tags/$RELEASE_TAG_PREFIX$VERSION |
+                 node -pe "JSON.parse(require('fs').readFileSync('/dev/stdin').toString()).body"`
+  check $? "fetch notes failure"
+
+  if [ "$RELEASE_NOTES" = "undefined" ]; then
+    check 1 "Could not retrieve release notes.\nEnsure release has been published via GitHub."
+  fi
+}
+
+usage()
+{
+cat <<- EEOOFF
+    This script will send a release notice to the Patternfly and Angular Patternfly mailling lists.
+
+    After publishing a release notes via GitHub, the script will pull the markup using GitHub APIs. The markup is then
+    added to the body of the outgoing message.
+
+    Note: You must configure your system to tell it where to send email. If you haven't done so, see:
+    http://codana.me/2014/11/23/sending-gmail-from-os-x-yosemite-terminal
+
+    sh [-x] $SCRIPT [-h] -a|p -v <version>
+
+    Example: sh $SCRIPT -v 3.15.0 -p
+
+    OPTIONS:
+    h       Display this message (default)
+    a       Angular PatternFly
+    p       PatternFly
+    v       The version number (e.g., 3.15.0)
+
+EEOOFF
+}
+
+# main()
+{
+  default
+
+  if [ "$#" -eq 0 ]; then
+    usage
+    exit 1
+  fi
+
+  while getopts hapv: c; do
+    case $c in
+      h) usage; exit 0;;
+      a) EMAIL="$EMAIL_PTNFLY_ANGULAR";
+         SUBJECT="Angular Patternfly";
+         REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
+      p) EMAIL="$EMAIL_PTNFLY";
+         SUBJECT="Patternfly";
+         REPO_SLUG=$REPO_SLUG_PTNFLY;;
+      v) VERSION=$OPTARG;;
+      \?) usage; exit 1;;
+    esac
+  done
+
+  if [ -z "$VERSION" -o -z "$REPO_SLUG" ]; then
+    usage
+    exit 1
+  fi
+
+  fetch_notes $REPO_SLUG
+  email $REPO_SLUG "$SUBJECT" "$EMAIL"
+}
