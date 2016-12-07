@@ -41,7 +41,11 @@ Thanks to everyone who participated in this release (both directly and indirectl
 EEOOFF
 
   SUBJECT="The Patternfly $VERSION release is now available"
-  cat $TMP_DIR/$TMP_FILE | mail -s "$2" "$3"
+  if [ -n "$DRY_RUN" ]; then
+    cat $TMP_DIR/$TMP_FILE
+  else
+    cat $TMP_DIR/$TMP_FILE | mail -s "The $2 v$VERSION Release is now available" "$3"
+  fi
   rm -rf $TMP_DIR
 }
 
@@ -79,6 +83,7 @@ cat <<- EEOOFF
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
+    d       Dry run (no email)
     p       PatternFly
     v       The version number (e.g., 3.15.0)
 
@@ -94,12 +99,13 @@ EEOOFF
     exit 1
   fi
 
-  while getopts hapv: c; do
+  while getopts hadpv: c; do
     case $c in
       h) usage; exit 0;;
       a) EMAIL="$EMAIL_PTNFLY_ANGULAR";
          SUBJECT="Angular Patternfly";
          REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
+      d) DRY_RUN=1;;
       p) EMAIL="$EMAIL_PTNFLY";
          SUBJECT="Patternfly";
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
