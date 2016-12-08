@@ -94,9 +94,9 @@ EEOOFF
     build
     build_test
 
-    # Skip publish for pull requests
-    if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then
-      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+    # Skip publish for pull requests and tags
+    if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
+      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WEB_COMPS" ]; then
         sh -x $SCRIPT_DIR/_publish.sh
         check $? "Publish failure"
       fi

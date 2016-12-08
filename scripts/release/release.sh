@@ -158,8 +158,14 @@ shrinkwrap()
   echo "*** Shrink wrapping $SHRINKWRAP_JSON"
   cd $BUILD_DIR
 
+  # Only include production dependencies with shrinkwrap
+  npm prune --production
+
   npm shrinkwrap
   check $? "npm shrinkwrap failure"
+
+  # Restore all packages for testing with karma, nsp, etc.
+  npm install
 }
 
 usage()
@@ -204,6 +210,10 @@ verify()
   if [ -s "$2/$PACKAGE_JSON" ]; then
     npm install $2
     check $? "npm install failure"
+
+    if [ ! -d "$1"/node_modules ]; then
+      check 1 "npm install failure: node_modules directory expected"
+    fi
   fi
   if [ -s "$2/$BOWER_JSON" ]; then
     bower install $2/$BOWER_JSON

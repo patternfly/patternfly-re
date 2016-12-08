@@ -7,18 +7,30 @@ build()
   echo "*** Building `pwd`"
   cd $BUILD_DIR
 
+  # Grunt build
   if [ -s "$GRUNT_FILE_JS" ]; then
     if [ -s "$GEM_FILE" ]; then
       bundle exec grunt build
     else
       grunt build
     fi
-    check $? "Build failure"
+  elif [ -s "$GULP_FILE_JS" ]; then
+    gulp build
   fi
+  check $? "Build failure"
+
+  # NG Doc build
   if [ -s "$GRUNT_NGDOCS_TMPL" ]; then
     echo "*** Building ngDocs: `pwd`"
     grunt ngdocs:publish
     check $? "ngDocs build failure"
+  fi
+
+  # JS Doc build
+  if [ -s "$JSDOC_CONF_JSON" ]; then
+    echo "*** Building jsDoc: `pwd`"
+    gulp doc
+    check $? "jsDoc build failure"
   fi
 }
 
@@ -39,11 +51,6 @@ build_install()
   if [ -s "$PACKAGE_JSON" ]; then
     npm install
     check $? "npm install failure"
-  fi
-
-  # Workaround for RCUE when shrinkwrap is removed prior to install
-  if [ -d node_modules/patternfly/node_modules ]; then
-    mv node_modules/patternfly/node_modules/* node_modules
   fi
 
   # Bower install
