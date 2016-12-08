@@ -26,10 +26,6 @@ git_setup()
   git remote rm rcue
   git remote add rcue https://$AUTH_TOKEN@github.com/$REPO_SLUG_RCUE.git
   check $? "git add remote failure"
-
-  # Fetch to test if tag exists
-  git fetch --tags
-  check $? "Fetch tags failure"
 }
 
 # Clone local repo and checkout branch

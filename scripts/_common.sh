@@ -105,4 +105,8 @@ git_setup()
   # Reconcile detached HEAD -- name must not be ambiguous with tags
   git checkout -B $TRAVIS_BRANCH-local
   check $? "git checkout failure"
+
+  # Fetch to test if tag exists
+  git fetch --tags
+  check $? "Fetch tags failure"
 }
