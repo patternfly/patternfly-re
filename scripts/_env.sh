@@ -33,8 +33,8 @@ REPO_SLUG_PTNFLY=patternfly/patternfly
 REPO_SLUG_PTNFLY_ANGULAR=patternfly/angular-patternfly
 REPO_SLUG_PTNFLY_ORG=patternfly/patternfly-org
 REPO_SLUG_PTNFLY_ENG_RELEASE=patternfly/patternfly-eng-release
-REPO_SLUG_RCUE=patternfly/rcue
 REPO_SLUG_PTNFLY_WEB_COMPS=patternfly-webcomponents/patternfly-webcomponents
+REPO_SLUG_RCUE=redhat-rcue/rcue
 
 # Skip npm publish (for testing forks)
 #SKIP_NPM_PUBLISH=1
