@@ -13,38 +13,24 @@ default()
   . $SCRIPT_DIR/../_common.sh
   . $SCRIPT_DIR/_common.sh
 
-  TMP_DIR="/tmp/$SCRIPT.$$"
-  BUILD_DIR="$TMP_DIR/repo"
+  BRANCH=$RELEASE_BRANCH
+  TAG_PREFIX=$BUMP_TAG_PREFIX
+  TMP_DIR="/tmp/patternfly-repos"
 }
 
 # Add tag to kick off version bump
 #
+# $1: Tag prefix
 add_bump_tag()
 {
   echo "*** Adding version bump tag"
   cd $BUILD_DIR
 
-  git tag $BUMP_TAG_PREFIX$VERSION
+  git tag $1$VERSION
   check $? "git tag failure"
 
-  git push origin tag $BUMP_TAG_PREFIX$VERSION
-  check $? "git push failure"
-}
-
-# Setup local repo
-#
-# $1: Repo slug
-setup_repo() {
-  echo "*** Setting up local repo $BUILD_DIR"
-  mkdir -p $TMP_DIR
-  cd $TMP_DIR
-
-  git clone https://github.com/$1.git
-  check $? "git clone failure"
-  cd $BUILD_DIR
-
-  git checkout master
-  check $? "git checkout failure"
+  git push origin tag $1$VERSION
+  check $? "git push tag failure"
 }
 
 usage()
@@ -66,25 +52,41 @@ cat <<- EEOOFF
 
     Note: Builds can only be stopped via the Travis UI: https://travis-ci.org/patternfly
 
-    sh [-x] $SCRIPT [-h] -a|e|o|p|r -v <version>
+    sh [-x] $SCRIPT [-h|d|t] -a|e|j|o|p|r|w -v <version>
 
-    Example: sh $SCRIPT -v 3.15.0
+    Example: sh $SCRIPT -v 3.15.0 -e
 
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
     e       Patternfly Eng Release
+    j       Patternfly jQuery
     o       PatternFly Org
     p       PatternFly
     r       PatternFly RCUE
     v       The version number (e.g., 3.15.0)
     w       Patternfly Web Components (not chained with other releases)
 
+    SPECIAL OPTIONS:
+    d       Release dev branches (e.g., PF4 alpha, beta, etc.)
+    t       Test against repo fork matching local username (e.g., `whoami`/patternfly)
+
 EEOOFF
 }
 
 # main()
 {
+  # Source env.sh afer setting REPO_FORK
+  if [ -z "$TRAVIS" ]; then
+    while getopts hadejoprtv:w c; do
+      case $c in
+        t) REPO_FORK=1;;
+        \?) ;;
+      esac
+    done
+    unset OPTIND
+  fi
+
   default
 
   if [ "$#" -eq 0 ]; then
@@ -92,16 +94,34 @@ EEOOFF
     exit 1
   fi
 
-  while getopts haeoprv: c; do
+  while getopts hadejoprtv:w c; do
     case $c in
       h) usage; exit 0;;
-      a) REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
-      e) REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
-      o) REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;;
-      p) REPO_SLUG=$REPO_SLUG_PTNFLY;;
-      r) REPO_SLUG=$REPO_SLUG_RCUE;;
+      a) PTNFLY_ANGULAR=1;
+         BUILD_DIR=$TMP_DIR/angular-patternfly;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
+      d) RELEASE_DEV=1;
+         TAG_PREFIX=$BUMP_DEV_TAG_PREFIX;;
+      e) PTNFLY_ENG_RELEASE=1;
+         BUILD_DIR=$TMP_DIR/patternfly-eng-release;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
+      j) PTNFLY_JQUERY=1;
+         BUILD_DIR=$TMP_DIR/patternfly-jquery;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_JQUERY;;
+      o) PTNFLY_ORG=1;
+         BUILD_DIR=$TMP_DIR/patternfly-org;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;;
+      p) PTNFLY=1;
+         BUILD_DIR=$TMP_DIR/patternfly;
+         REPO_SLUG=$REPO_SLUG_PTNFLY;;
+      r) PTNFLY_RCUE=1;
+         BUILD_DIR=$TMP_DIR/rcue;
+         REPO_SLUG=$REPO_SLUG_RCUE;;
+      t) ;;
       v) VERSION=$OPTARG;;
-      w) REPO_SLUG=$REPO_SLUG_PTNFLY_WEB_COMPS;;
+      w) PTNFLY_WC=1;
+         BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_WC;;
       \?) usage; exit 1;;
     esac
   done
@@ -111,8 +131,15 @@ EEOOFF
     exit 1
   fi
 
-  setup_repo $REPO_SLUG
-  add_bump_tag
+  # Release dev branches if applicable
+  if [ -n "$RELEASE_DEV" ]; then
+    if [ -n "$PTNFLY" -o -n "$PTNFLY_JQUERY" -o -n "$PTNFLY_ANGULAR" ]; then
+      BRANCH=$DEV_BRANCH
+    fi
+  fi
+
+  setup_repo $REPO_SLUG $BRANCH
+  add_bump_tag $TAG_PREFIX
   rm -rf $TMP_DIR
 
   echo "*** Travis build history: https://travis-ci.org/patternfly"

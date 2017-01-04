@@ -16,6 +16,7 @@ default()
   . $SCRIPT_DIR/../_common.sh
   . $SCRIPT_DIR/_common.sh
 
+  BRANCH=$RELEASE_DIST_BRANCH
   TMP_DIR="/tmp/patternfly-releases"
 }
 
@@ -41,16 +42,21 @@ cat <<- EEOOFF
 
     This script will npm publish from the latest repo clone or Travis build.
 
-    sh [-x] $SCRIPT [-h] -a|e|p|w
+    sh [-x] $SCRIPT [-h|b] -a|e|j|p|s|w
 
     Example: sh $SCRIPT -p
 
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
-    e       Patternfly RE
+    e       Patternfly Eng Release
+    j       Patternfly jQuery
     p       PatternFly
+    s       Skip new clone (e.g., to rebuild repo)
     w       Patternfly Web Components
+
+    SPECIAL OPTIONS:
+    b       The branch to publish (e.g., branch-4.0-dev)
 
 EEOOFF
 }
@@ -64,26 +70,31 @@ EEOOFF
     exit 1
   fi
 
-  while getopts haepw c; do
+  while getopts hab:ejpsw c; do
     case $c in
       h) usage; exit 0;;
       a) BUILD_DIR=$TMP_DIR/angular-patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
+      b) BRANCH=$OPTARG;;
       e) BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
+      j) BUILD_DIR=$TMP_DIR/patternfly-jquery;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_JQUERY;;
       p) BUILD_DIR=$TMP_DIR/patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
+      s) SKIP_SETUP=1;;
       w) BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_WEB_COMPS;;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_WC;;
       \?) usage; exit 1;;
     esac
   done
 
   # Publish from the latest repo clone or Travis build
-  if [ -z "$TRAVIS" ]; then
-    setup_repo $REPO_SLUG master-dist
-  else
+  if [ -n "$TRAVIS_BUILD_DIR" ]; then
     BUILD_DIR=$TRAVIS_BUILD_DIR
+  fi
+  if [ -z "$SKIP_SETUP" ]; then
+    setup_repo $REPO_SLUG $BRANCH
   fi
 
   publish_npm

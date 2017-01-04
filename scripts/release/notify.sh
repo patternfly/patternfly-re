@@ -76,16 +76,18 @@ cat <<- EEOOFF
     Note: You must configure your system to tell it where to send email. If you haven't done so, see:
     http://codana.me/2014/11/23/sending-gmail-from-os-x-yosemite-terminal
 
-    sh [-x] $SCRIPT [-h] -a|p -v <version>
+    sh [-x] $SCRIPT [-h|d] -a|p -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -p
 
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
-    d       Dry run (no email)
     p       PatternFly
     v       The version number (e.g., 3.15.0)
+
+    SPECIAL OPTIONS:
+    d       Dry run (no email)
 
 EEOOFF
 }

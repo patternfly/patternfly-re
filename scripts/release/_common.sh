@@ -17,6 +17,11 @@ git_setup()
   git remote add pf https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY.git
   check $? "git add remote failure"
 
+  # Add Patternfly jQuery as a remote
+  git remote rm pfj
+  git remote add pfj https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_JQUERY.git
+  check $? "git add remote failure"
+
   # Add Patternfly Org as a remote
   git remote rm pfo
   git remote add pfo https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ORG.git
@@ -31,7 +36,7 @@ git_setup()
 # Clone local repo and checkout branch
 #
 # $1: Repo slug
-# $2: Repo branch
+# $2: Branch name
 setup_repo() {
   DIR=$TMP_DIR/`basename $1`
   echo "*** Setting up local repo $DIR"

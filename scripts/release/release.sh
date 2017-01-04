@@ -16,6 +16,8 @@ default()
   . $SCRIPT_DIR/../_common.sh
   . $SCRIPT_DIR/_common.sh
 
+  BRANCH=$RELEASE_BRANCH
+  BRANCH_DIST=$RELEASE_DIST_BRANCH
   TMP_DIR="/tmp/patternfly-releases"
 }
 
@@ -30,20 +32,27 @@ bump_bower()
     return
   fi
 
+  # For testing forks without npm publish, set REPO_FORK=1 via local env
+  if [ -n "REPO_FORK" ]; then
+    PKG_PTNFLY="git://$REPO_URL_PTNFLY#$BRANCH_DIST"
+    PKG_PTNFLY_ANGULAR="git://$REPO_URL_PTNFLY_ANGULAR#$BRANCH_DIST"
+  else
+    PKG_PTNFLY=~$VERSION
+    PKG_PTNFLY_ANGULAR=~$VERSION
+  fi
+
   if [ -n "$PTNFLY" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"~$VERSION\"|" > $BOWER_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ORG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"~$VERSION\",|" | \
-    sed "s|\"angular-patternfly\":.*|\"angular-patternfly\": \"~$VERSION\",|" > $BOWER_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" | \
+    sed "s|\"angular-patternfly\":.*|\"angular-patternfly\": \"$PKG_PTNFLY_ANGULAR\",|" > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_RCUE" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"~$VERSION\"|" > $BOWER_JSON.tmp
-  elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
   fi
   check $? "Version bump failure"
 
@@ -60,23 +69,32 @@ bump_package()
   echo "*** Bumping version in $PACKAGE_JSON to $VERSION"
   cd $BUILD_DIR
 
+  # For testing forks without npm publish, set REPO_FORK=1 via local env
+  if [ -n "REPO_FORK" ]; then
+    PKG_PTNFLY="git+https://$REPO_URL_PTNFLY#$BRANCH_DIST"
+    PKG_PTNFLY_ENG_RELEASE="git+https://$REPO_URL_PTNFLY_ENG_RELEASE"
+  else
+    PKG_PTNFLY=~$VERSION
+    PKG_PTNFLY_ENG_RELEASE=~$VERSION
+  fi
+
   if [ -n "$PTNFLY" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON |
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"~$VERSION\",|" > $PACKAGE_JSON.tmp
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
+    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"~$VERSION\"|" |
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"~$VERSION\"|" > $PACKAGE_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
+    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ORG" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON |
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"~$VERSION\"|" > $PACKAGE_JSON.tmp
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
+    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_RCUE" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"~$VERSION\"|"|
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"~$VERSION\"|" > $PACKAGE_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
+    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON > $PACKAGE_JSON.tmp
-  elif [ -n "$PTNFLY_WEB_COMPS" ]; then
+  elif [ -n "$PTNFLY_WC" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON > $PACKAGE_JSON.tmp
   fi
   check $? "Version bump failure"
@@ -101,6 +119,24 @@ bump_home()
   fi
   if [ -s "$HOME_HTML.tmp" ]; then
     mv $HOME_HTML.tmp $HOME_HTML
+    check $? "File move failure"
+  fi
+}
+
+# Bump version number in JavaScript
+#
+bump_js()
+{
+  echo "*** Bumping version in $PTNFLY_SETTINGS_JS to $VERSION"
+  cd $BUILD_DIR
+
+  if [ -n "$PTNFLY" ]; then
+    sed "s|version:.*|version: \"$VERSION\",|" $PTNFLY_SETTINGS_JS > $PTNFLY_SETTINGS_JS.tmp
+  fi
+  check $? "Version bump failure"
+
+  if [ -s "$PTNFLY_SETTINGS_JS.tmp" ]; then
+    mv $PTNFLY_SETTINGS_JS.tmp $PTNFLY_SETTINGS_JS
     check $? "File move failure"
   fi
 }
@@ -139,15 +175,17 @@ commit()
 
 # Push changes to remote repo
 #
+# $1: Branch name
 push()
 {
   echo "*** Pushing changes to $REPO_SLUG"
   cd $BUILD_DIR
 
-  git push --set-upstream origin $BRANCH --force
+  git checkout -B $1
+  git push --set-upstream origin $1 --force
   check $? "git push failure"
 
-  echo "*** Changes pushed to the $BRANCH branch of $REPO_SLUG"
+  echo "*** Changes pushed to the $1 branch of $REPO_SLUG"
   echo "*** Review changes and create a PR via GitHub"
 }
 
@@ -176,7 +214,7 @@ cat <<- EEOOFF
 
     Note: After changes are pushed, a PR will need to be created via GitHub.
 
-    sh [-x] $SCRIPT [-h] -a|e|f|o|p|r|s|w -v <version>
+    sh [-x] $SCRIPT [-h|b|d|f|s] -a|e|j|o|p|r|w -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -p
 
@@ -184,13 +222,19 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     e       Patternfly Eng Release
-    f       Force push new branch to GitHub (e.g., bump-v3.15.0)
+    j       Patternfly jQuery
     o       PatternFly Org
     p       PatternFly
     r       PatternFly RCUE
-    s       Skip new clone and clean cache to rebuild previously created repo
     v       The version number (e.g., 3.15.0)
     w       Patternfly Web Components
+
+    SPECIAL OPTIONS:
+    b       The branch to release (e.g., branch-4.0-dev)
+    d       Release dev branches (e.g., PF4 alpha, beta, etc.)
+    f       Force push new branch to GitHub (e.g., bump-v3.15.0)
+    s       Skip new clone and clean cache (e.g., to rebuild existing repo)
+    t       Test against repo fork matching local username (e.g., `whoami`/patternfly)
 
 EEOOFF
 }
@@ -223,6 +267,17 @@ verify()
 
 # main()
 {
+  # Source env.sh afer setting REPO_FORK
+  if [ -z "$TRAVIS" ]; then
+    while getopts hab:efjoprstv:w c; do
+      case $c in
+        t) REPO_FORK=1;;
+        \?) ;;
+      esac
+    done
+    unset OPTIND
+  fi
+
   default
 
   if [ "$#" -eq 0 ]; then
@@ -230,17 +285,23 @@ verify()
     exit 1
   fi
 
-  while getopts haefoprsv:w c; do
+  while getopts hab:defjoprstv:w c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
          BUILD_DIR=$TMP_DIR/angular-patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;
          VERIFY_DIR="$TMP_DIR/angular-patternfly-verify";;
+      b) BRANCH=$OPTARG;;
+      d) BRANCH_DIST=$DEV_DIST_BRANCH;;
       e) PTNFLY_ENG_RELEASE=1;
          BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;
          VERIFY_DIR="$TMP_DIR/patternfly-eng-release-verify";;
+      j) PTNFLY_JQUERY=1;
+         BUILD_DIR=$TMP_DIR/patternfly-jquery;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_JQUERY;
+         VERIFY_DIR="$TMP_DIR/patternfly-jquery";;
       f) PUSH=1;;
       o) PTNFLY_ORG=1;
          BUILD_DIR=$TMP_DIR/patternfly-org;
@@ -255,11 +316,12 @@ verify()
          REPO_SLUG=$REPO_SLUG_RCUE;
          VERIFY_DIR="$TMP_DIR/rcue-verify";;
       s) SKIP_SETUP=1;;
+      t) ;;
       v) VERSION=$OPTARG;
-         BRANCH=bump-v$VERSION;;
-      w) PTNFLY_WEB_COMPS=1;
+         BUMP_BRANCH=bump-v$VERSION;;
+      w) PTNFLY_WC=1;
          BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_WEB_COMPS;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_WC;
          VERIFY_DIR="$TMP_DIR/patternfly-webcomponents-verify";;
       \?) usage; exit 1;;
     esac
@@ -283,6 +345,7 @@ verify()
   bump_bower
   bump_package
   bump_home
+  bump_js
   build_install
   build
 
@@ -296,7 +359,7 @@ verify()
 
   # Push changes to remote branch
   if [ -n "$PUSH" ]; then
-    push
+    push $BUMP_BRANCH
   fi
   if [ -z "$TRAVIS" ]; then
     echo "*** Run publish-npm.sh to publish npm after PR has been merged"

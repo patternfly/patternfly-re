@@ -44,10 +44,12 @@ push_dist()
 #
 prereqs()
 {
-  # Avoid creating a dist equivalent for all branches in the main repo
-  if [ "$TRAVIS_REPO_SLUG" = "$REPO_SLUG_PTNFLY" -a "$TRAVIS_BRANCH" != "master" ]; then
-    echo "This commit was made against $TRAVIS_BRANCH and not the master or tag! Do not deploy!"
-    exit 0
+  # Avoid creating a dist equivalent for all branches added to the main repository
+  if [ -z "$REPO_FORK" ]; then
+    if [ "$TRAVIS_BRANCH" != "$RELEASE_BRANCH" -o "$TRAVIS_BRANCH" != "$DEV_BRANCH" ]; then
+      echo "This commit was made against $TRAVIS_BRANCH and not the master or tag! Do not deploy!"
+      exit 0
+    fi
   fi
 
   # Ensure dist branch is not redeployed.

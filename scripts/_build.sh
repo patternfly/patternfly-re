@@ -23,6 +23,7 @@ prereqs()
 
     # Get version from tag
     case "$TRAVIS_TAG" in
+      $BUMP_DEV_TAG_PREFIX* ) RELEASE_DEV=1;;
       $BUMP_TAG_PREFIX* ) RELEASE=1;;
       *) echo "$TRAVIS_TAG is not a recognized format. Do not release!";;
     esac
@@ -37,7 +38,7 @@ cat <<- EEOOFF
 
     Note: Intended for use with Travis only.
 
-    sh [-x] $SCRIPT [-h] -a|e|o|p|r|w
+    sh [-x] $SCRIPT [-h] -a|e|j|o|p|r|w
 
     Example: sh $SCRIPT -p
 
@@ -45,6 +46,7 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     e       Patternfly Eng Release
+    j       Patternfly jQuery
     o       PatternFly Org
     p       PatternFly
     r       PatternFly RCUE
@@ -57,26 +59,27 @@ EEOOFF
 {
   default
 
-
   if [ "$#" -eq 0 ]; then
     usage
     exit 1
   fi
 
-  while getopts haeoprw c; do
+  while getopts haejoprw c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
          SWITCH=a;;
       e) PTNFLY_ENG_RELEASE=1;
          SWITCH=e;;
+      j) PTNFLY_JQUERY=1;
+         SWITCH=j;;
       o) PTNFLY_ORG=1;
          SWITCH=o;;
       p) PTNFLY=1;
          SWITCH=p;;
       r) PTNFLY_RCUE=1;
          SWITCH=r;;
-      w) PTNFLY_WEB_COMPS=1;
+      w) PTNFLY_WC=1;
          SWITCH=w;;
       \?) usage; exit 1;;
     esac
@@ -89,6 +92,9 @@ EEOOFF
   if [ -n "$RELEASE" ]; then
     sh -x $SCRIPT_DIR/release/_build.sh -$SWITCH
     check $? "Release failure"
+  elif [ -n "$RELEASE_DEV" ]; then
+    sh -x $SCRIPT_DIR/release/_build-dev.sh -$SWITCH
+    check $? "Release failure"
   else
     build_install
     build
@@ -96,7 +102,7 @@ EEOOFF
 
     # Skip publish for pull requests and tags
     if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
-      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WEB_COMPS" ]; then
+      if [ -n "$PTNFLY" -o -n "$PTNFLY_JQUERY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
         sh -x $SCRIPT_DIR/_publish.sh
         check $? "Publish failure"
       fi

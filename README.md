@@ -53,20 +53,47 @@ It is expected that the following environment variables are set via Travis CI.
 - NPM_USER: A user with permission to npm publish.
 - NPM_PWD: The password of the user with permission to npm publish.
 
-### build/_env.sh
+## Dev Release
 
-The following variables may be overridden to test personal forks and skip npm publish.
+For dev releases (e.g., PF4 aplha, beta, etc.), the following variables may be overridden.
 
-- REPO_SLUG_PTNFLY=owner_name/patternfly
-- REPO_SLUG_PTNFLY_ANGULAR=owner_name/angular-patternfly
-- REPO_SLUG_PTNFLY_ORG=owner_name/patternfly-org
-- REPO_SLUG_PTNFLY_ENG_RELEASE=owner_name/patternfly-eng-release
-- REPO_SLUG_RCUE=owner_name/rcue
-- SKIP_NPM_PUBLISH=1
+- DEV_BRANCH=branch-4.0-dev
+- DEV_DIST_BRANCH=branch-4.0-dev-dist
+
+1. Bump the version number, build, etc., starting with the patternfly-eng-release repo
+ - Run sh ./build/release/release-all.sh -v 4.0.0.1 -e -d
+
+Note: Environment variables must be committed for the automated release, but may be overridden locally for manual releases.
 
 ## Testing
 
-When making changes, please ensure:
+When testing, run the scripts first from a forked repo to avoid accidentally merging and npm publish.
+
+1. Run the `whoami` command to view your username.
+ - Confirm this user name matches your forked repo(s) (e.g., github.com/`whoami`/patternfly.git).
+2. Bump the version number, build, etc., starting with the patternfly-eng-release repo
+ - Run sh ./build/release/release-all.sh -v 3.15.0 -e -t
+
+If your local user name is not a match, set the following environment variables locally.
+
+- REPO_FORK=1: A flag indicating script are running against a fork instead of main repo(s).
+- REPO_OWNER: The repo owner (e.g., github.com/`owner_name`/`repo_name`.git)
+
+Alternatively, the following variables may be overridden to test forked repos and skip npm publish.
+
+- REPO_SLUG_PTNFLY=`owner_name`/patternfly
+- REPO_SLUG_PTNFLY_ANGULAR=`owner_name`/angular-patternfly
+- REPO_SLUG_PTNFLY_JQUERY=`owner_name`/patternfly-jquery
+- REPO_SLUG_PTNFLY_ORG=`owner_name`/patternfly-org
+- REPO_SLUG_PTNFLY_ENG_RELEASE=`owner_name`/patternfly-eng-release
+- REPO_SLUG_RCUE=`owner_name`/rcue
+- SKIP_NPM_PUBLISH=1
+
+Note: Testing from a fork may require both master and master-dist branches to simulate npm and bower installs.
+
+## Verify
+
+When verifying changes, please ensure:
 
 - Tags and pull requests are built without pushing changes
 - Merges are built with generated files pushed to master-dist
@@ -89,7 +116,7 @@ This script will bump version numbers, build, shrinkwrap, test, install, push to
 
 1. Choose version using [semantic versioning](https://docs.npmjs.com/getting-started/semantic-versioning) ([details](https://github.com/patternfly/patternfly/blob/master/README.md#release))
 2. Bump the version number, build, etc.
- - Run sh ./build/release/release.sh -v 3.15.0 -f -a|e|p|o|r
+ - Run sh ./build/release/release.sh -v 3.15.0 -f -a|e|j|o|p|r|w
 3. Review test pages, verify latest changes
  - cd /tmp/patternfly-releases/patternfly
  - Run grunt server
