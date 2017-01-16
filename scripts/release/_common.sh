@@ -8,28 +8,23 @@ git_setup()
   cd $BUILD_DIR
 
   # Add Angular Patternfly as a remote
-  git remote rm apf
-  git remote add apf https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ANGULAR.git
+  git remote rm $REPO_NAME_PTNFLY_ANGULAR
+  git remote add $REPO_NAME_PTNFLY_ANGULAR https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ANGULAR.git
   check $? "git add remote failure"
 
   # Add Patternfly as a remote
-  git remote rm pf
-  git remote add pf https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY.git
-  check $? "git add remote failure"
-
-  # Add Patternfly jQuery as a remote
-  git remote rm pfj
-  git remote add pfj https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_JQUERY.git
+  git remote rm $REPO_NAME_PTNFLY
+  git remote add $REPO_NAME_PTNFLY https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY.git
   check $? "git add remote failure"
 
   # Add Patternfly Org as a remote
-  git remote rm pfo
-  git remote add pfo https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ORG.git
+  git remote rm $REPO_NAME_PTNFLY_ORG
+  git remote add $REPO_NAME_PTNFLY_ORG https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ORG.git
   check $? "git add remote failure"
 
   # Add RCUE as the next remote
-  git remote rm rcue
-  git remote add rcue https://$AUTH_TOKEN@github.com/$REPO_SLUG_RCUE.git
+  git remote rm $REPO_NAME_RCUE
+  git remote add $REPO_NAME_RCUE https://$AUTH_TOKEN@github.com/$REPO_SLUG_RCUE.git
   check $? "git add remote failure"
 }
 

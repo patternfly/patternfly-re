@@ -67,27 +67,27 @@ Note: Environment variables must be committed for the automated release, but may
 
 ## Testing
 
-When testing, run the scripts first from a forked repo to avoid accidentally merging and npm publish.
+When testing, run the scripts first from a forked repo to avoid accidentally merging and publishing releases.
 
 1. Run the `whoami` command to view your username.
  - Confirm this user name matches your forked repo(s) (e.g., github.com/`whoami`/patternfly.git).
 2. Bump the version number, build, etc., starting with the patternfly-eng-release repo
- - Run sh ./build/release/release-all.sh -v 3.15.0 -e -t
+ - Run sh ./build/release/release-all.sh -v 3.15.0 -e -f
 
 If your local user name is not a match, set the following environment variables locally.
 
 - REPO_FORK=1: A flag indicating script are running against a fork instead of main repo(s).
 - REPO_OWNER: The repo owner (e.g., github.com/`owner_name`/`repo_name`.git)
 
-Alternatively, the following variables may be overridden to test forked repos and skip npm publish.
+Alternatively, the following variables may be overridden to test forked repos and skip npm and webjar publish.
 
 - REPO_SLUG_PTNFLY=`owner_name`/patternfly
 - REPO_SLUG_PTNFLY_ANGULAR=`owner_name`/angular-patternfly
-- REPO_SLUG_PTNFLY_JQUERY=`owner_name`/patternfly-jquery
 - REPO_SLUG_PTNFLY_ORG=`owner_name`/patternfly-org
 - REPO_SLUG_PTNFLY_ENG_RELEASE=`owner_name`/patternfly-eng-release
 - REPO_SLUG_RCUE=`owner_name`/rcue
 - SKIP_NPM_PUBLISH=1
+- SKIP_WEBJAR_PUBLISH=1
 
 Note: Testing from a fork may require both master and master-dist branches to simulate npm and bower installs.
 
@@ -116,7 +116,7 @@ This script will bump version numbers, build, shrinkwrap, test, install, push to
 
 1. Choose version using [semantic versioning](https://docs.npmjs.com/getting-started/semantic-versioning) ([details](https://github.com/patternfly/patternfly/blob/master/README.md#release))
 2. Bump the version number, build, etc.
- - Run sh ./build/release/release.sh -v 3.15.0 -f -a|e|j|o|p|r|w
+ - Run sh ./build/release/release.sh -v 3.15.0 -g -a|e|o|p|r|w
 3. Review test pages, verify latest changes
  - cd /tmp/patternfly-releases/patternfly
  - Run grunt server

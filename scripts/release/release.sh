@@ -45,7 +45,7 @@ bump_bower()
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ORG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" | \
@@ -214,7 +214,7 @@ cat <<- EEOOFF
 
     Note: After changes are pushed, a PR will need to be created via GitHub.
 
-    sh [-x] $SCRIPT [-h|b|d|f|s] -a|e|j|o|p|r|w -v <version>
+    sh [-x] $SCRIPT [-h|b|d|f|g|s] -a|e|o|p|r|w -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -p
 
@@ -222,7 +222,6 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     e       Patternfly Eng Release
-    j       Patternfly jQuery
     o       PatternFly Org
     p       PatternFly
     r       PatternFly RCUE
@@ -232,9 +231,9 @@ cat <<- EEOOFF
     SPECIAL OPTIONS:
     b       The branch to release (e.g., branch-4.0-dev)
     d       Release dev branches (e.g., PF4 alpha, beta, etc.)
-    f       Force push new branch to GitHub (e.g., bump-v3.15.0)
+    f       Run against repo fork matching local username (e.g., `whoami`/patternfly)
+    g       Push new branch to GitHub (e.g., bump-v3.15.0)
     s       Skip new clone and clean cache (e.g., to rebuild existing repo)
-    t       Test against repo fork matching local username (e.g., `whoami`/patternfly)
 
 EEOOFF
 }
@@ -269,9 +268,9 @@ verify()
 {
   # Source env.sh afer setting REPO_FORK
   if [ -z "$TRAVIS" ]; then
-    while getopts hab:efjoprstv:w c; do
+    while getopts hab:defgoprsv:w c; do
       case $c in
-        t) REPO_FORK=1;;
+        f) REPO_FORK=1;;
         \?) ;;
       esac
     done
@@ -285,7 +284,7 @@ verify()
     exit 1
   fi
 
-  while getopts hab:defjoprstv:w c; do
+  while getopts hab:defgoprsv:w c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -298,11 +297,8 @@ verify()
          BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;
          VERIFY_DIR="$TMP_DIR/patternfly-eng-release-verify";;
-      j) PTNFLY_JQUERY=1;
-         BUILD_DIR=$TMP_DIR/patternfly-jquery;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_JQUERY;
-         VERIFY_DIR="$TMP_DIR/patternfly-jquery";;
-      f) PUSH=1;;
+      f) ;;
+      g) PUSH=1;;
       o) PTNFLY_ORG=1;
          BUILD_DIR=$TMP_DIR/patternfly-org;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;
@@ -316,7 +312,7 @@ verify()
          REPO_SLUG=$REPO_SLUG_RCUE;
          VERIFY_DIR="$TMP_DIR/rcue-verify";;
       s) SKIP_SETUP=1;;
-      t) ;;
+
       v) VERSION=$OPTARG;
          BUMP_BRANCH=bump-v$VERSION;;
       w) PTNFLY_WC=1;

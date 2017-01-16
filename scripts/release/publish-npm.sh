@@ -32,7 +32,13 @@ publish_npm()
     printf "$NPM_USER\n$NPM_PWD\n$NPM_USER@redhat.com" | npm login
     check $? "npm login failure"
   fi
-  npm publish
+
+  # Tag dev release: https://medium.com/@mbostock/prereleases-and-npm-e778fc5e2420#.s6a099w69
+  if [ -n "$TAG_DEV" ]; then
+    npm publish -tag next
+  else
+    npm publish
+  fi
   check $? "npm publish failure"
 }
 
@@ -42,7 +48,7 @@ cat <<- EEOOFF
 
     This script will npm publish from the latest repo clone or Travis build.
 
-    sh [-x] $SCRIPT [-h|b] -a|e|j|p|s|w
+    sh [-x] $SCRIPT [-h|b|d|s] -a|e|p|w
 
     Example: sh $SCRIPT -p
 
@@ -50,13 +56,13 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     e       Patternfly Eng Release
-    j       Patternfly jQuery
     p       PatternFly
-    s       Skip new clone (e.g., to rebuild repo)
     w       Patternfly Web Components
 
     SPECIAL OPTIONS:
     b       The branch to publish (e.g., branch-4.0-dev)
+    d       Release dev branches (e.g., PF4 alpha, beta, etc.)
+    s       Skip new clone (e.g., to rebuild repo)
 
 EEOOFF
 }
@@ -70,16 +76,15 @@ EEOOFF
     exit 1
   fi
 
-  while getopts hab:ejpsw c; do
+  while getopts hab:depsw c; do
     case $c in
       h) usage; exit 0;;
       a) BUILD_DIR=$TMP_DIR/angular-patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
       b) BRANCH=$OPTARG;;
+      d) TAG_DEV=1;;
       e) BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
-      j) BUILD_DIR=$TMP_DIR/patternfly-jquery;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_JQUERY;;
       p) BUILD_DIR=$TMP_DIR/patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
       s) SKIP_SETUP=1;;

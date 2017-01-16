@@ -102,16 +102,16 @@ cat <<- EEOOFF
 
     AUTH_TOKEN must be set via Travis CI.
 
-    sh [-x] $SCRIPT [-h] -a|e|j|p
+    sh [-x] $SCRIPT [-h] -a|e|p|r
 
     Example: sh $SCRIPT -p
 
     OPTIONS:
     h       Display this message (default)
-    a       Angular PatternFly (DISABLED)
+    a       Angular PatternFly
     e       Patternfly Eng Release
-    j       Patternfly jQuery (DISABLED)
     p       PatternFly
+    r       PatternFly RCUE
 
 EEOOFF
 }
@@ -125,7 +125,7 @@ EEOOFF
     exit 1
   fi
 
-  while getopts haejp c; do
+  while getopts haepr c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -134,12 +134,12 @@ EEOOFF
       e) PTNFLY_ENG_RELEASE=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;
          SWITCH=e;;
-      j) PTNFLY_JQUERY=1;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_JQUERY;
-         SWITCH=j;;
       p) PTNFLY=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY;
          SWITCH=p;;
+      r) PTNFLY_RCUE=1;
+         REPO_SLUG=$REPO_SLUG_RCUE;
+         SWITCH=r;;
       \?) usage; exit 1;;
     esac
   done
@@ -152,17 +152,17 @@ EEOOFF
   check $? "bump version failure"
 
   # Push version bump and generated files to master and dist branches
-  if [ -n "$PTNFLY_ENG_RELEASE" ]; then
-    sh -x $SCRIPT_DIR/_publish.sh -m
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $DEV_BRANCH
+    sh -x $SCRIPT_DIR/_publish-branch.sh -d -b $DEV_DIST_BRANCH
   else
-    sh -x $SCRIPT_DIR/_publish.sh -m -b $DEV_BRANCH
-    sh -x $SCRIPT_DIR/_publish.sh -d -b $DEV_DIST_BRANCH
+   sh -x $SCRIPT_DIR/_publish-branch.sh -m
   fi
   check $? "Publish failure"
 
   # NPM publish
   if [ -z "$SKIP_NPM_PUBLISH" ]; then
-    sh -x $SCRIPT_DIR/publish-npm.sh -s -$SWITCH
+    sh -x $SCRIPT_DIR/publish-npm.sh -d -s -$SWITCH
     check $? "npm publish failure"
   fi
 
@@ -170,17 +170,8 @@ EEOOFF
 
   # Kick off next version bump in chained release
   if [ -n "$PTNFLY" ]; then
-    # Todo: Enable patternfly-jquery when repo is ready
-    #add_bump_tag $REPO_NAME_PTNFLY_JQUERY $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_PTNFLY_JQUERY
     add_bump_tag $REPO_NAME_PTNFLY_ANGULAR $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_PTNFLY_ANGULAR
-
-    # Todo: How to provide PF4 for RCUE, considering we don't npm publish?
-    #add_bump_tag $REPO_NAME_RCUE $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_RCUE
-  elif [ -n "$PTNFLY_JQUERY" ]; then
-    add_bump_tag $REPO_NAME_PTNFLY_ANGULAR $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_PTNFLY_ANGULAR
-    #add_bump_tag $REPO_NAME_RCUE $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_RCUE
-  #elif [ -n "$PTNFLY_ANGULAR" ]; then
-    #add_bump_tag $REPO_NAME_PTNFLY_ORG $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_PTNFLY_ORG
+    add_bump_tag $REPO_NAME_RCUE $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_RCUE
   elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
     add_bump_tag $REPO_NAME_PTNFLY $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_PTNFLY
   fi

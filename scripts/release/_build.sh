@@ -102,7 +102,7 @@ cat <<- EEOOFF
 
     AUTH_TOKEN must be set via Travis CI.
 
-    sh [-x] $SCRIPT [-h] -a|e|j|o|p|r|w
+    sh [-x] $SCRIPT [-h] -a|e|o|p|r|w
 
     Example: sh $SCRIPT -p
 
@@ -110,7 +110,6 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     e       Patternfly Eng Release
-    j       Patternfly jQuery
     o       PatternFly Org
     p       PatternFly
     r       PatternFly RCUE
@@ -128,7 +127,7 @@ EEOOFF
     exit 1
   fi
 
-  while getopts haejoprw c; do
+  while getopts haeoprw c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -137,9 +136,6 @@ EEOOFF
       e) PTNFLY_ENG_RELEASE=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;
          SWITCH=e;;
-      j) PTNFLY_JQUERY=1;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_JQUERY;
-         SWITCH=j;;
       o) PTNFLY_ORG=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;
          SWITCH=o;;
@@ -163,10 +159,10 @@ EEOOFF
   check $? "bump version failure"
 
   # Push version bump and generated files to master and dist branches
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_JQUERY" -o -n "$PTNFLY_ANGULAR" ]; then
-    sh -x $SCRIPT_DIR/_publish.sh -m -d
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m -d
   else
-    sh -x $SCRIPT_DIR/_publish.sh -m
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m
   fi
   check $? "Publish failure"
 
@@ -178,15 +174,18 @@ EEOOFF
     fi
   fi
 
+  # Webjar publish
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+    if [ -z "$SKIP_WEBJAR_PUBLISH" ]; then
+      sh -x $SCRIPT_DIR/publish-webjar.sh -s -$SWITCH
+      check $? "webjar publish failure"
+    fi
+  fi
+
   add_release_tag # Add release tag
 
   # Kick off next version bump in chained release
   if [ -n "$PTNFLY" ]; then
-    # Todo: Enable patternfly-jquery when repo is ready
-    #add_bump_tag $REPO_NAME_PTNFLY_JQUERY $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_JQUERY
-    add_bump_tag $REPO_NAME_PTNFLY_ANGULAR $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ANGULAR
-    add_bump_tag $REPO_NAME_RCUE $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_RCUE
-  elif [ -n "$PTNFLY_JQUERY" ]; then
     add_bump_tag $REPO_NAME_PTNFLY_ANGULAR $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ANGULAR
     add_bump_tag $REPO_NAME_RCUE $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_RCUE
   elif [ -n "$PTNFLY_ANGULAR" ]; then

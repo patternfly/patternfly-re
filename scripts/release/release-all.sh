@@ -52,7 +52,7 @@ cat <<- EEOOFF
 
     Note: Builds can only be stopped via the Travis UI: https://travis-ci.org/patternfly
 
-    sh [-x] $SCRIPT [-h|d|t] -a|e|j|o|p|r|w -v <version>
+    sh [-x] $SCRIPT [-h|d|f] -a|e|o|p|r|w -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -e
 
@@ -60,16 +60,15 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     e       Patternfly Eng Release
-    j       Patternfly jQuery
     o       PatternFly Org
     p       PatternFly
     r       PatternFly RCUE
     v       The version number (e.g., 3.15.0)
-    w       Patternfly Web Components (not chained with other releases)
+    w       Patternfly Web Components
 
     SPECIAL OPTIONS:
     d       Release dev branches (e.g., PF4 alpha, beta, etc.)
-    t       Test against repo fork matching local username (e.g., `whoami`/patternfly)
+    f       Run against repo fork matching local username (e.g., `whoami`/patternfly)
 
 EEOOFF
 }
@@ -78,9 +77,9 @@ EEOOFF
 {
   # Source env.sh afer setting REPO_FORK
   if [ -z "$TRAVIS" ]; then
-    while getopts hadejoprtv:w c; do
+    while getopts hadefoprv:w c; do
       case $c in
-        t) REPO_FORK=1;;
+        f) REPO_FORK=1;;
         \?) ;;
       esac
     done
@@ -94,7 +93,7 @@ EEOOFF
     exit 1
   fi
 
-  while getopts hadejoprtv:w c; do
+  while getopts hadefoprv:w c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -105,9 +104,7 @@ EEOOFF
       e) PTNFLY_ENG_RELEASE=1;
          BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
-      j) PTNFLY_JQUERY=1;
-         BUILD_DIR=$TMP_DIR/patternfly-jquery;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_JQUERY;;
+      f) ;;
       o) PTNFLY_ORG=1;
          BUILD_DIR=$TMP_DIR/patternfly-org;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;;
@@ -117,7 +114,6 @@ EEOOFF
       r) PTNFLY_RCUE=1;
          BUILD_DIR=$TMP_DIR/rcue;
          REPO_SLUG=$REPO_SLUG_RCUE;;
-      t) ;;
       v) VERSION=$OPTARG;;
       w) PTNFLY_WC=1;
          BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
@@ -133,7 +129,7 @@ EEOOFF
 
   # Release dev branches if applicable
   if [ -n "$RELEASE_DEV" ]; then
-    if [ -n "$PTNFLY" -o -n "$PTNFLY_JQUERY" -o -n "$PTNFLY_ANGULAR" ]; then
+    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
       BRANCH=$DEV_BRANCH
     fi
   fi
