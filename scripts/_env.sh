@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Build Patternfly templates using Jekyll
+export PF_PAGE_BUILDER=jekyll
+
 # Email used to notify users release is available
 EMAIL_PTNFLY=patternfly@redhat.com
 EMAIL_PTNFLY_ANGULAR=patternfly-angular@redhat.com
@@ -41,9 +44,9 @@ REPO_OWNER_PTNFLY_RCUE=redhat-rcue
 # Set flag indicating scripts are running against a fork to prevent accidental merging, npm publish, etc.
 if [ -n "$TRAVIS" ]; then
   REPO_OWNER=`dirname $TRAVIS_REPO_SLUG`
-  if [ "$REPO_OWNER" != "$REPO_OWNER_PTNFLY" -o \
-       "$REPO_OWNER" != "$REPO_OWNER_PTNFLY_WC" -o \
-       "$REPO_OWNER" != "$REPO_OWNER_PTNFLY_RCUE" ]; then
+  if ! [ "$REPO_OWNER" = "$REPO_OWNER_PTNFLY" -o \
+         "$REPO_OWNER" = "$REPO_OWNER_PTNFLY_WC" -o \
+         "$REPO_OWNER" = "$REPO_OWNER_PTNFLY_RCUE" ]; then
     REPO_FORK=1
   fi
 fi

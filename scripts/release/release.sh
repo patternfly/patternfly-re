@@ -45,7 +45,7 @@ bump_bower()
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" > $BOWER_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ORG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" | \
