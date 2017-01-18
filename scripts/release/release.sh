@@ -33,7 +33,7 @@ bump_bower()
   fi
 
   # For testing forks without npm publish, set REPO_FORK=1 via local env
-  if [ -n "REPO_FORK" ]; then
+  if [ -n "$REPO_FORK" ]; then
     PKG_PTNFLY="git://$REPO_URL_PTNFLY#$BRANCH_DIST"
     PKG_PTNFLY_ANGULAR="git://$REPO_URL_PTNFLY_ANGULAR#$BRANCH_DIST"
   else
@@ -70,7 +70,7 @@ bump_package()
   cd $BUILD_DIR
 
   # For testing forks without npm publish, set REPO_FORK=1 via local env
-  if [ -n "REPO_FORK" ]; then
+  if [ -n "$REPO_FORK" ]; then
     PKG_PTNFLY="git+https://$REPO_URL_PTNFLY#$BRANCH_DIST"
     PKG_PTNFLY_ENG_RELEASE="git+https://$REPO_URL_PTNFLY_ENG_RELEASE"
   else

@@ -35,7 +35,7 @@ cat <<- EEOOFF
 
     This script will publish webjars from published npm packages.
 
-    sh [-x] $SCRIPT [-h] -a|p
+    sh [-x] $SCRIPT [-h] -a|p -v 3.15.0
 
     Example: sh $SCRIPT -p
 
@@ -43,6 +43,7 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     p       PatternFly
+    v       The version number (e.g., 3.15.0)
 
 EEOOFF
 }

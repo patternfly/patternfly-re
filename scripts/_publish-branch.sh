@@ -33,9 +33,9 @@ push_dist()
     git merge -Xtheirs $TRAVIS_BRANCH-local --no-edit --ff
     check $? "git merge failure"
 
-    git push upstream $TRAVIS_BRANCH-dist --force -v
+    git push upstream $TRAVIS_BRANCH-dist -v
   else
-    git push upstream $TRAVIS_BRANCH-local:$TRAVIS_BRANCH-dist --force -v
+    git push upstream $TRAVIS_BRANCH-local:$TRAVIS_BRANCH-dist -v # <local-branch>:<remote-branch>
   fi
   check $? "git push failure"
 }
@@ -46,7 +46,7 @@ prereqs()
 {
   # Avoid creating a dist equivalent for all branches added to the main repository
   if [ -z "$REPO_FORK" ]; then
-    if [ "$TRAVIS_BRANCH" != "$RELEASE_BRANCH" -o "$TRAVIS_BRANCH" != "$DEV_BRANCH" ]; then
+    if [ ! "$TRAVIS_BRANCH" = "$RELEASE_BRANCH" -o "$TRAVIS_BRANCH" = "$DEV_BRANCH" ]; then
       echo "This commit was made against $TRAVIS_BRANCH and not the master or tag! Do not deploy!"
       exit 0
     fi

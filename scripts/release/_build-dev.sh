@@ -156,7 +156,7 @@ EEOOFF
     sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $DEV_BRANCH
     sh -x $SCRIPT_DIR/_publish-branch.sh -d -b $DEV_DIST_BRANCH
   else
-   sh -x $SCRIPT_DIR/_publish-branch.sh -m
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m
   fi
   check $? "Publish failure"
 

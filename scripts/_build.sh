@@ -100,11 +100,7 @@ EEOOFF
     # Skip publish for pull requests and tags
     if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
       if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
-        if [ -s "$SCRIPT_DIR/_publish-branch.sh" ]; then
-          sh -x $SCRIPT_DIR/_publish-branch.sh
-        else
-          sh -x $SCRIPT_DIR/_publish.sh
-        fi
+        sh -x $SCRIPT_DIR/_publish-branch.sh
         check $? "Publish failure"
       fi
     fi

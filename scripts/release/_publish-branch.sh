@@ -45,9 +45,9 @@ push_dist()
     git merge -Xtheirs $TRAVIS_BRANCH-local --no-edit --ff
     check $? "git merge failure"
 
-    git push upstream $2 --force -v
+    git push upstream $2 -v
   else
-    git push upstream $TRAVIS_BRANCH-local:$2 --force -v
+    git push upstream $TRAVIS_BRANCH-local:$2 -v # <local-branch>:<remote-branch>
   fi
   check $? "git push failure"
 }
@@ -70,7 +70,7 @@ push_master()
   check $? "git merge failure"
 
   # Push to master
-  git push upstream $1:$2
+  git push upstream $2:$1 -v # <local-branch>:<remote-branch>
   check $? "git push failure"
 }
 

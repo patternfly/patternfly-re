@@ -177,7 +177,7 @@ EEOOFF
   # Webjar publish
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
     if [ -z "$SKIP_WEBJAR_PUBLISH" ]; then
-      sh -x $SCRIPT_DIR/publish-webjar.sh -s -$SWITCH
+      sh -x $SCRIPT_DIR/publish-webjar.sh -$SWITCH
       check $? "webjar publish failure"
     fi
   fi
