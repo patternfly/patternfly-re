@@ -155,6 +155,8 @@ EEOOFF
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
     sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $DEV_BRANCH
     sh -x $SCRIPT_DIR/_publish-branch.sh -d -b $DEV_DIST_BRANCH
+  elif [ -n "$PTNFLY_RCUE" ]; then
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $DEV_BRANCH
   else
     sh -x $SCRIPT_DIR/_publish-branch.sh -m
   fi

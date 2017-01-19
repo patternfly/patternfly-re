@@ -129,7 +129,7 @@ EEOOFF
 
   # Release dev branches if applicable
   if [ -n "$RELEASE_DEV" ]; then
-    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_RCUE" ]; then
       BRANCH=$DEV_BRANCH
     fi
   fi

@@ -17,16 +17,60 @@ default()
   . $SCRIPT_DIR/_common.sh
 }
 
-# Publish to webjar
+# Publish bower to webjar
 #
 # $1: Repo name
 # $2: Version
-publish_webjar()
+publish_bower_webjar()
 {
-  echo "*** Publishing webjar"
+  echo "*** Publishing bower to webjar"
 
-  curl -X POST "http://www.webjars.org/_npm/deploy?name=$1&version=$2&channelId=123"
-  check $? "webjar publish failure"
+  # http://www.webjars.org/_bower/deploy?name=patternfly&version=3.18.1&channelId=e2627542-dd69-362d-8860-05704720017f
+  curl -X POST "http://www.webjars.org/_bower/deploy?name=$1&version=$2&channelId=`random_guid`"
+  check $? "publish bower webjar failure"
+
+  printf "\n"
+}
+
+# Publish npm to webjar
+#
+# $1: Repo name
+# $2: Version
+publish_npm_webjar()
+{
+  echo "*** Publishing npm to webjar"
+
+  # http://www.webjars.org/_npm/deploy?name=patternfly&version=3.18.1&channelId=e2627542-dd69-362d-8860-05704720017f
+  curl -X POST "http://www.webjars.org/_npm/deploy?name=$1&version=$2&channelId=`random_guid`"
+  check $? "publish npm webjar failure"
+
+  printf "\n"
+}
+
+# Generate random GUIDs
+#
+# See: http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript/105074#105074
+random_guid()
+{
+  NUM1=`random_number`
+  NUM2=`random_number`
+  RESULT1=`expr $NUM1 + $NUM2`
+
+  NUM1=`random_number`
+  NUM2=`random_number`
+  NUM3=`random_number`
+  NUM4=`random_number`
+  RESULT2=`expr $NUM1 + $NUM2 + $NUM3 + $NUM4`
+
+  echo "$RESULT1-`random_number`-`random_number`-`random_number`-$RESULT2"
+}
+
+# Generate random number
+#
+# See: http://www.mactricksandtips.com/2012/01/generate-random-numbers-in-terminalbash.html
+random_number()
+{
+  echo "`od -vAn -N4 -tu < /dev/urandom | head -1 | awk '{print $1}'`"
 }
 
 usage()
@@ -35,13 +79,14 @@ cat <<- EEOOFF
 
     This script will publish webjars from published npm packages.
 
-    sh [-x] $SCRIPT [-h] -a|p -v 3.15.0
+    sh [-x] $SCRIPT [-h|n] -a|p -v 3.15.0
 
     Example: sh $SCRIPT -p
 
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
+    n       The package name (overrides -a|p switches)
     p       PatternFly
     v       The version number (e.g., 3.15.0)
 
@@ -57,10 +102,11 @@ EEOOFF
     exit 1
   fi
 
-  while getopts hapv: c; do
+  while getopts han:pv: c; do
     case $c in
       h) usage; exit 0;;
       a) REPO_NAME=$REPO_NAME_PTNFLY_ANGULAR;;
+      n) OVERRIDE_REPO_NAME=$OPTARG;;
       p) REPO_NAME=$REPO_NAME_PTNFLY;;
       v) VERSION=$OPTARG;;
       \?) usage; exit 1;;
@@ -72,5 +118,10 @@ EEOOFF
     exit 1
   fi
 
-  publish_webjar $REPO_NAME $VERSION
+  if [ -n "$OVERRIDE_REPO_NAME" ]; then
+    REPO_NAME=$OVERRIDE_REPO_NAME
+  fi
+
+  publish_bower_webjar $REPO_NAME $VERSION
+  publish_npm_webjar $REPO_NAME $VERSION
 }

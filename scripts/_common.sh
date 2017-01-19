@@ -85,8 +85,10 @@ check()
 {
   if [ "$1" != 0 ]; then
     if [ "$3" = "warn" ]; then
+      printf "\n"
       echo "*** Warning: $2"
     else
+      printf "\n"
       echo "*** Error: $2"
       exit $1
     fi
