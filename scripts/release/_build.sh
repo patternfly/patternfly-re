@@ -82,7 +82,7 @@ prereqs()
     check 1 echo "Release must be performed on $REPO_SLUG only!"
   fi
 
-  git tag | grep "^$RELEASE_TAG_PREFIX$VERSION"
+  git tag | grep "^$RELEASE_TAG_PREFIX$VERSION$"
   if [ $? -eq 0 ]; then
     check 1 "Tag $RELEASE_TAG_PREFIX$VERSION exists. Do not release!"
   fi

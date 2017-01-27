@@ -214,7 +214,7 @@ cat <<- EEOOFF
 
     Note: After changes are pushed, a PR will need to be created via GitHub.
 
-    sh [-x] $SCRIPT [-h|b|d|f|g|s] -a|e|o|p|r|w -v <version>
+    sh [-x] $SCRIPT [-h|b|f|g|n|s] -a|e|o|p|r|w -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -p
 
@@ -229,10 +229,10 @@ cat <<- EEOOFF
     w       Patternfly Web Components
 
     SPECIAL OPTIONS:
-    b       The branch to release (e.g., branch-4.0-dev)
-    d       Release dev branches (e.g., PF4 alpha, beta, etc.)
+    b       The branch to release (e.g., $NEXT_BRANCH)
     f       Run against repo fork matching local username (e.g., `whoami`/patternfly)
     g       Push new branch to GitHub (e.g., bump-v3.15.0)
+    n       Release PF 'next' branches (e.g., PF4 alpha, beta, etc.)
     s       Skip new clone and clean cache (e.g., to rebuild existing repo)
 
 EEOOFF
@@ -268,7 +268,7 @@ verify()
 {
   # Source env.sh afer setting REPO_FORK
   if [ -z "$TRAVIS" ]; then
-    while getopts hab:defgoprsv:w c; do
+    while getopts hab:efgnoprsv:w c; do
       case $c in
         f) REPO_FORK=1;;
         \?) ;;
@@ -284,7 +284,7 @@ verify()
     exit 1
   fi
 
-  while getopts hab:defgoprsv:w c; do
+  while getopts hab:efgnoprsv:w c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -292,13 +292,13 @@ verify()
          REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;
          VERIFY_DIR="$TMP_DIR/angular-patternfly-verify";;
       b) BRANCH=$OPTARG;;
-      d) BRANCH_DIST=$DEV_DIST_BRANCH;;
       e) PTNFLY_ENG_RELEASE=1;
          BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;
          VERIFY_DIR="$TMP_DIR/patternfly-eng-release-verify";;
       f) ;;
       g) PUSH=1;;
+      n) BRANCH_DIST=$NEXT_DIST_BRANCH;;
       o) PTNFLY_ORG=1;
          BUILD_DIR=$TMP_DIR/patternfly-org;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;
@@ -312,7 +312,6 @@ verify()
          REPO_SLUG=$REPO_SLUG_RCUE;
          VERIFY_DIR="$TMP_DIR/rcue-verify";;
       s) SKIP_SETUP=1;;
-
       v) VERSION=$OPTARG;
          BUMP_BRANCH=bump-v$VERSION;;
       w) PTNFLY_WC=1;
@@ -345,7 +344,7 @@ verify()
   build_install
   build
 
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_RCUE" ]; then
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_RCUE" -o -n "$PTNFLY_WC" ]; then
     shrinkwrap
   fi
 

@@ -15,17 +15,18 @@ GIT_USER_EMAIL=patternfly-build@redhat.com
 RELEASE_BRANCH=master
 RELEASE_DIST_BRANCH=master-dist
 
-# Dev branches (i.e., PF4 alpha, beta, etc.)
-DEV_BRANCH=branch-4.0-dev
-DEV_DIST_BRANCH=branch-4.0-dev-dist
+# PF 'next' branches (i.e., PF4 alpha, beta, etc.)
+NEXT_BRANCH=branch-4.0-dev
+NEXT_DIST_BRANCH=branch-4.0-dev-dist
+NEXT_TAG=next
 
 # Prefix for tagging version bump (e.g., _bump-v3.15.0)
 BUMP_TAG_PREFIX=_bump-v
 BUMP_TAG_PREFIX_COUNT=`echo $BUMP_TAG_PREFIX | wc -c`
 
-# Prefix for tagging dev version bump (e.g., _bump_dev-v4.0.0)
-BUMP_DEV_TAG_PREFIX=_bump_dev-v
-BUMP_DEV_TAG_PREFIX_COUNT=`echo $BUMP_DEV_TAG_PREFIX | wc -c`
+# Prefix for tagging PF 'next' version bump (e.g., _bump_next-v4.0.0)
+BUMP_NEXT_TAG_PREFIX=_bump_next-v
+BUMP_NEXT_TAG_PREFIX_COUNT=`echo $BUMP_NEXT_TAG_PREFIX | wc -c`
 
 # Prefix used for tagging release (e.g., v3.15.0)
 RELEASE_TAG_PREFIX=v

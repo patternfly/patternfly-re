@@ -46,7 +46,7 @@ prereqs()
 {
   # Avoid creating a dist equivalent for all branches added to the main repository
   if [ -z "$REPO_FORK" ]; then
-    if [ ! "$TRAVIS_BRANCH" = "$RELEASE_BRANCH" -o "$TRAVIS_BRANCH" = "$DEV_BRANCH" ]; then
+    if [ ! "$TRAVIS_BRANCH" = "$RELEASE_BRANCH" -o "$TRAVIS_BRANCH" = "$NEXT_BRANCH" ]; then
       echo "This commit was made against $TRAVIS_BRANCH and not the master or tag! Do not deploy!"
       exit 0
     fi

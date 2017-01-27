@@ -23,7 +23,7 @@ prereqs()
 
     # Get version from tag
     case "$TRAVIS_TAG" in
-      $BUMP_DEV_TAG_PREFIX* ) RELEASE_DEV=1;;
+      $BUMP_NEXT_TAG_PREFIX* ) RELEASE_NEXT=1;;
       $BUMP_TAG_PREFIX* ) RELEASE=1;;
       *) echo "$TRAVIS_TAG is not a recognized format. Do not release!";;
     esac
@@ -89,8 +89,8 @@ EEOOFF
   if [ -n "$RELEASE" ]; then
     sh -x $SCRIPT_DIR/release/_build.sh -$SWITCH
     check $? "Release failure"
-  elif [ -n "$RELEASE_DEV" ]; then
-    sh -x $SCRIPT_DIR/release/_build-dev.sh -$SWITCH
+  elif [ -n "$RELEASE_NEXT" ]; then
+    sh -x $SCRIPT_DIR/release/_build-next.sh -$SWITCH
     check $? "Release failure"
   else
     build_install

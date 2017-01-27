@@ -86,9 +86,11 @@ cat <<- EEOOFF
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
-    n       The package name (overrides -a|p switches)
     p       PatternFly
     v       The version number (e.g., 3.15.0)
+
+    SPECIAL OPTIONS:
+    n       The package name (overrides -a|p switches)
 
 EEOOFF
 }

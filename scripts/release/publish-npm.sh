@@ -33,8 +33,8 @@ publish_npm()
     check $? "npm login failure"
   fi
 
-  # Tag dev release: https://medium.com/@mbostock/prereleases-and-npm-e778fc5e2420#.s6a099w69
-  if [ -n "$TAG_DEV" ]; then
+  # Tag PF 'next' release: https://medium.com/@mbostock/prereleases-and-npm-e778fc5e2420#.s6a099w69
+  if [ -n "$TAG_NEXT" ]; then
     npm publish -tag next
   else
     npm publish
@@ -48,7 +48,7 @@ cat <<- EEOOFF
 
     This script will npm publish from the latest repo clone or Travis build.
 
-    sh [-x] $SCRIPT [-h|b|d|s] -a|e|p|w
+    sh [-x] $SCRIPT [-h|b|n|s] -a|e|p|w
 
     Example: sh $SCRIPT -p
 
@@ -60,8 +60,8 @@ cat <<- EEOOFF
     w       Patternfly Web Components
 
     SPECIAL OPTIONS:
-    b       The branch to publish (e.g., branch-4.0-dev)
-    d       Release dev branches (e.g., PF4 alpha, beta, etc.)
+    b       The branch to publish (e.g., $NEXT_BRANCH)
+    n       Release PF 'next' branches (e.g., PF4 alpha, beta, etc.)
     s       Skip new clone (e.g., to rebuild repo)
 
 EEOOFF
@@ -76,15 +76,15 @@ EEOOFF
     exit 1
   fi
 
-  while getopts hab:depsw c; do
+  while getopts hab:enpsw c; do
     case $c in
       h) usage; exit 0;;
       a) BUILD_DIR=$TMP_DIR/angular-patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
       b) BRANCH=$OPTARG;;
-      d) TAG_DEV=1;;
       e) BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
+      n) TAG_NEXT=1;;
       p) BUILD_DIR=$TMP_DIR/patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
       s) SKIP_SETUP=1;;

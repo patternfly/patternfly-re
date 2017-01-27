@@ -94,7 +94,7 @@ cat <<- EEOOFF
     m       Push version bump to master branch
 
     SPECIAL OPTIONS:
-    b       The branch to publish (e.g., branch-4.0-dev)
+    b       The branch to publish (e.g., $NEXT_BRANCH)
 
 EEOOFF
 }

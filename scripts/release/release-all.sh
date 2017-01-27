@@ -52,7 +52,7 @@ cat <<- EEOOFF
 
     Note: Builds can only be stopped via the Travis UI: https://travis-ci.org/patternfly
 
-    sh [-x] $SCRIPT [-h|d|f] -a|e|o|p|r|w -v <version>
+    sh [-x] $SCRIPT [-h|f|n] -a|e|o|p|r|w -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -e
 
@@ -67,8 +67,8 @@ cat <<- EEOOFF
     w       Patternfly Web Components
 
     SPECIAL OPTIONS:
-    d       Release dev branches (e.g., PF4 alpha, beta, etc.)
     f       Run against repo fork matching local username (e.g., `whoami`/patternfly)
+    n       Release PF 'next' branches (e.g., PF4 alpha, beta, etc.)
 
 EEOOFF
 }
@@ -77,7 +77,7 @@ EEOOFF
 {
   # Source env.sh afer setting REPO_FORK
   if [ -z "$TRAVIS" ]; then
-    while getopts hadefoprv:w c; do
+    while getopts haefnoprv:w c; do
       case $c in
         f) REPO_FORK=1;;
         \?) ;;
@@ -93,18 +93,18 @@ EEOOFF
     exit 1
   fi
 
-  while getopts hadefoprv:w c; do
+  while getopts haefnoprv:w c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
          BUILD_DIR=$TMP_DIR/angular-patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
-      d) RELEASE_DEV=1;
-         TAG_PREFIX=$BUMP_DEV_TAG_PREFIX;;
       e) PTNFLY_ENG_RELEASE=1;
          BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
       f) ;;
+      n) RELEASE_NEXT=1;
+         TAG_PREFIX=$BUMP_NEXT_TAG_PREFIX;;
       o) PTNFLY_ORG=1;
          BUILD_DIR=$TMP_DIR/patternfly-org;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;;
@@ -127,10 +127,10 @@ EEOOFF
     exit 1
   fi
 
-  # Release dev branches if applicable
-  if [ -n "$RELEASE_DEV" ]; then
+  # Release PF 'next' branches
+  if [ -n "$RELEASE_NEXT" ]; then
     if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_RCUE" ]; then
-      BRANCH=$DEV_BRANCH
+      BRANCH=$NEXT_BRANCH
     fi
   fi
 

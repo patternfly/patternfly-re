@@ -23,12 +23,12 @@ add_bump_tag()
   echo "*** Adding version bump tag"
   cd $BUILD_DIR
 
-  # Add tag to kick off version bump
+  # Add tag
   git fetch $1 $2:$3 # <remote-branch>:<local-branch>
   check $? "git fetch failure"
   git checkout $3
-  git tag $BUMP_DEV_TAG_PREFIX$VERSION -f
-  git push $1 tag $BUMP_DEV_TAG_PREFIX$VERSION
+  git tag $BUMP_NEXT_TAG_PREFIX$VERSION -f
+  git push $1 tag $BUMP_NEXT_TAG_PREFIX$VERSION
   check $? "git push tag failure"
 }
 
@@ -39,7 +39,7 @@ add_release_tag()
   echo "*** Adding release tag"
   cd $BUILD_DIR
 
-  # Add release tag
+  # Add tag
   git tag $RELEASE_TAG_PREFIX$VERSION
   check $? "add tag failure"
   git push upstream tag $RELEASE_TAG_PREFIX$VERSION
@@ -53,9 +53,9 @@ delete_bump_tag()
   echo "*** Deleting bump tag"
   cd $BUILD_DIR
 
-  # Remove bump tag
-  git tag -d $BUMP_DEV_TAG_PREFIX$VERSION
-  git push upstream :refs/tags/$BUMP_DEV_TAG_PREFIX$VERSION
+  # Remove tag
+  git tag -d $BUMP_NEXT_TAG_PREFIX$VERSION
+  git push upstream :refs/tags/$BUMP_NEXT_TAG_PREFIX$VERSION
   check $? "delete tag failure"
 }
 
@@ -70,7 +70,7 @@ prereqs()
 
     # Get version from tag
     case "$TRAVIS_TAG" in
-      $BUMP_DEV_TAG_PREFIX* ) VERSION=`echo "$TRAVIS_TAG" | cut -c $BUMP_DEV_TAG_PREFIX_COUNT-`;;
+      $BUMP_NEXT_TAG_PREFIX* ) VERSION=`echo "$TRAVIS_TAG" | cut -c $BUMP_NEXT_TAG_PREFIX_COUNT-`;;
       *) check 1 "$TRAVIS_TAG is not a recognized format. Do not release!";;
     esac
   fi
@@ -82,7 +82,7 @@ prereqs()
     check 1 echo "Release must be performed on $REPO_SLUG only!"
   fi
 
-  git tag | grep "^$RELEASE_TAG_PREFIX$VERSION"
+  git tag | grep "^$RELEASE_TAG_PREFIX$VERSION$"
   if [ $? -eq 0 ]; then
     check 1 "Tag $RELEASE_TAG_PREFIX$VERSION exists. Do not release!"
   fi
@@ -148,15 +148,15 @@ EEOOFF
   git_setup
 
   # Bump version numbers, build, and test
-  sh -x $SCRIPT_DIR/release.sh -s -d -v $VERSION -$SWITCH
+  sh -x $SCRIPT_DIR/release.sh -s -n -v $VERSION -$SWITCH
   check $? "bump version failure"
 
   # Push version bump and generated files to master and dist branches
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
-    sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $DEV_BRANCH
-    sh -x $SCRIPT_DIR/_publish-branch.sh -d -b $DEV_DIST_BRANCH
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $NEXT_BRANCH
+    sh -x $SCRIPT_DIR/_publish-branch.sh -d -b $NEXT_DIST_BRANCH
   elif [ -n "$PTNFLY_RCUE" ]; then
-    sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $DEV_BRANCH
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $NEXT_BRANCH
   else
     sh -x $SCRIPT_DIR/_publish-branch.sh -m
   fi
@@ -164,7 +164,7 @@ EEOOFF
 
   # NPM publish
   if [ -z "$SKIP_NPM_PUBLISH" -a -z "$PTNFLY_RCUE" ]; then
-    sh -x $SCRIPT_DIR/publish-npm.sh -d -s -$SWITCH
+    sh -x $SCRIPT_DIR/publish-npm.sh -n -s -$SWITCH
     check $? "npm publish failure"
   fi
 
@@ -172,9 +172,9 @@ EEOOFF
 
   # Kick off next version bump in chained release
   if [ -n "$PTNFLY" ]; then
-    add_bump_tag $REPO_NAME_PTNFLY_ANGULAR $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_PTNFLY_ANGULAR
-    add_bump_tag $REPO_NAME_RCUE $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_RCUE
+    add_bump_tag $REPO_NAME_PTNFLY_ANGULAR $NEXT_BRANCH $NEXT_BRANCH-$REPO_NAME_PTNFLY_ANGULAR
+    add_bump_tag $REPO_NAME_RCUE $NEXT_BRANCH $NEXT_BRANCH-$REPO_NAME_RCUE
   elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
-    add_bump_tag $REPO_NAME_PTNFLY $DEV_BRANCH $DEV_BRANCH-$REPO_NAME_PTNFLY
+    add_bump_tag $REPO_NAME_PTNFLY $NEXT_BRANCH $NEXT_BRANCH-$REPO_NAME_PTNFLY
   fi
 }
