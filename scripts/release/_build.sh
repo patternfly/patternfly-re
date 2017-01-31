@@ -167,16 +167,14 @@ EEOOFF
   check $? "Publish failure"
 
   # NPM publish
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_ENG_RELEASE" ]; then
-    if [ -z "$SKIP_NPM_PUBLISH" ]; then
-      sh -x $SCRIPT_DIR/publish-npm.sh -s -$SWITCH
-      check $? "npm publish failure"
-    fi
+  if [ -z "$SKIP_NPM_PUBLISH" -a -z "$PTNFLY_ORG" ]; then
+    sh -x $SCRIPT_DIR/publish-npm.sh -s -$SWITCH
+    check $? "npm publish failure"
   fi
 
   # Webjar publish
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
-    if [ -z "$SKIP_WEBJAR_PUBLISH" ]; then
+  if [ -z "$SKIP_WEBJAR_PUBLISH" ]; then
+    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
       sh -x $SCRIPT_DIR/publish-webjar.sh -v $VERSION -$SWITCH
       check $? "webjar publish failure"
     fi

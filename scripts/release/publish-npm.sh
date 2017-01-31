@@ -48,7 +48,7 @@ cat <<- EEOOFF
 
     This script will npm publish from the latest repo clone or Travis build.
 
-    sh [-x] $SCRIPT [-h|b|n|s] -a|e|p|w
+    sh [-x] $SCRIPT [-h|b|n|s] -a|e|p|r|w
 
     Example: sh $SCRIPT -p
 
@@ -57,6 +57,7 @@ cat <<- EEOOFF
     a       Angular PatternFly
     e       Patternfly Eng Release
     p       PatternFly
+    r       PatternFly RCUE
     w       Patternfly Web Components
 
     SPECIAL OPTIONS:
@@ -76,7 +77,7 @@ EEOOFF
     exit 1
   fi
 
-  while getopts hab:enpsw c; do
+  while getopts hab:enprsw c; do
     case $c in
       h) usage; exit 0;;
       a) BUILD_DIR=$TMP_DIR/angular-patternfly;
@@ -88,6 +89,9 @@ EEOOFF
       p) BUILD_DIR=$TMP_DIR/patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
       s) SKIP_SETUP=1;;
+      r) BRANCH=$RELEASE_BRANCH
+         BUILD_DIR=$TMP_DIR/rcue;
+         REPO_SLUG=$REPO_SLUG_RCUE;;
       w) BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
          REPO_SLUG=$REPO_SLUG_PTNFLY_WC;;
       \?) usage; exit 1;;

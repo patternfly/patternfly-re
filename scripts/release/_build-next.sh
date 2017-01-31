@@ -163,7 +163,7 @@ EEOOFF
   check $? "Publish failure"
 
   # NPM publish
-  if [ -z "$SKIP_NPM_PUBLISH" -a -z "$PTNFLY_RCUE" ]; then
+  if [ -z "$SKIP_NPM_PUBLISH" ]; then
     sh -x $SCRIPT_DIR/publish-npm.sh -n -s -$SWITCH
     check $? "npm publish failure"
   fi
