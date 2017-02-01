@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "dependencies": {},
   "devDependencies": {},
-  "description": "A set of release engineering scripts for PatternFly, Angular Patternfly, Patternfly Org, and RCUE.",
+  "description": "A set of release engineering scripts for PatternFly, Angular PatternFly, PatternFly Org, and RCUE.",
   "repository": {
     "type": "git",
     "url": "https://github.com/patternfly/patternfly-eng-release.git"

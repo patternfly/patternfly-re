@@ -43,7 +43,7 @@ cat <<- EEOOFF
     When the release is complete, the custom Git tag is removed from GitHub. The custom tag is created using a clone so
     it won't persist in your local repo.
 
-    If the release is successful, RCUE, Angular Patternfly, and Patternfly Org will be released as well. This is done
+    If the release is successful, RCUE, Angular PatternFly, and PatternFly Org will be released as well. This is done
     by creating a Git tag for the next repo to be built.
 
     If 3.15.0 is provided as a version number; for example, the release will be tagged as v3.15.0.
@@ -59,12 +59,12 @@ cat <<- EEOOFF
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
-    e       Patternfly Eng Release
+    e       PatternFly Eng Release
     o       PatternFly Org
     p       PatternFly
     r       PatternFly RCUE
     v       The version number (e.g., 3.15.0)
-    w       Patternfly Web Components
+    w       PatternFly Web Components
 
     SPECIAL OPTIONS:
     f       Run against repo fork matching local username (e.g., `whoami`/patternfly)

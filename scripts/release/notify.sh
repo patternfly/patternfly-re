@@ -40,7 +40,7 @@ Thanks to everyone who participated in this release (both directly and indirectl
 - the PatternFly team
 EEOOFF
 
-  SUBJECT="The Patternfly $VERSION release is now available"
+  SUBJECT="The PatternFly $VERSION release is now available"
   if [ -n "$DRY_RUN" ]; then
     cat $TMP_DIR/$TMP_FILE
   else
@@ -68,7 +68,7 @@ fetch_notes()
 usage()
 {
 cat <<- EEOOFF
-    This script will send a release notice to the Patternfly and Angular Patternfly mailling lists.
+    This script will send a release notice to the PatternFly and Angular PatternFly mailling lists.
 
     After publishing a release notes via GitHub, the script will pull the markup using GitHub APIs. The markup is then
     added to the body of the outgoing message.
@@ -105,11 +105,11 @@ EEOOFF
     case $c in
       h) usage; exit 0;;
       a) EMAIL="$EMAIL_PTNFLY_ANGULAR";
-         SUBJECT="Angular Patternfly";
+         SUBJECT="Angular PatternFly";
          REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
       d) DRY_RUN=1;;
       p) EMAIL="$EMAIL_PTNFLY";
-         SUBJECT="Patternfly";
+         SUBJECT="PatternFly";
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
       v) VERSION=$OPTARG;;
       \?) usage; exit 1;;
