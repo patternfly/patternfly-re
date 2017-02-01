@@ -9,22 +9,22 @@ git_setup()
 
   # Add Angular PatternFly as a remote
   git remote rm $REPO_NAME_PTNFLY_ANGULAR
-  git remote add $REPO_NAME_PTNFLY_ANGULAR https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ANGULAR.git
+  git remote add $REPO_NAME_PTNFLY_ANGULAR git@github.com:/$REPO_SLUG_PTNFLY_ANGULAR.git
   check $? "git add remote failure"
 
   # Add PatternFly as a remote
   git remote rm $REPO_NAME_PTNFLY
-  git remote add $REPO_NAME_PTNFLY https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY.git
+  git remote add $REPO_NAME_PTNFLY git@github.com:/$REPO_SLUG_PTNFLY.git
   check $? "git add remote failure"
 
   # Add PatternFly Org as a remote
   git remote rm $REPO_NAME_PTNFLY_ORG
-  git remote add $REPO_NAME_PTNFLY_ORG https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ORG.git
+  git remote add $REPO_NAME_PTNFLY_ORG git@github.com:/$REPO_SLUG_PTNFLY_ORG.git
   check $? "git add remote failure"
 
   # Add RCUE as the next remote
   git remote rm $REPO_NAME_RCUE
-  git remote add $REPO_NAME_RCUE https://$AUTH_TOKEN@github.com/$REPO_SLUG_RCUE.git
+  git remote add $REPO_NAME_RCUE git@github.com:/$REPO_SLUG_RCUE.git
   check $? "git add remote failure"
 }
 
@@ -40,7 +40,7 @@ setup_repo() {
   mkdir -p $TMP_DIR
   cd $TMP_DIR
 
-  git clone https://github.com/$1.git
+  git clone git@github.com:/$1.git
   check $? "git clone failure"
 
   cd $DIR
