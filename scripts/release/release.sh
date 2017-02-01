@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 default()
 {
@@ -50,7 +50,7 @@ bump_bower()
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" | \
     sed "s|\"angular-patternfly\":.*|\"angular-patternfly\": \"$PKG_PTNFLY_ANGULAR\",|" > $BOWER_JSON.tmp
-  elif [ -n "$PTNFLY_RCUE" ]; then
+  elif [ -n "$RCUE" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
   fi
@@ -87,8 +87,8 @@ bump_package()
     sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ORG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
-  elif [ -n "$PTNFLY_RCUE" ]; then
+    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
+  elif [ -n "$RCUE" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
     sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
@@ -224,7 +224,7 @@ cat <<- EEOOFF
     e       PatternFly Eng Release
     o       PatternFly Org
     p       PatternFly
-    r       PatternFly RCUE
+    r       RCUE
     v       The version number (e.g., 3.15.0)
     w       PatternFly Web Components
 
@@ -307,7 +307,7 @@ verify()
          BUILD_DIR=$TMP_DIR/patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY;
          VERIFY_DIR="$TMP_DIR/patternfly-verify";;
-      r) PTNFLY_RCUE=1;
+      r) RCUE=1;
          BUILD_DIR=$TMP_DIR/rcue;
          REPO_SLUG=$REPO_SLUG_RCUE;
          VERIFY_DIR="$TMP_DIR/rcue-verify";;
@@ -344,7 +344,7 @@ verify()
   build_install
   build
 
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_RCUE" -o -n "$PTNFLY_WC" ]; then
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" -o -n "$PTNFLY_WC" ]; then
     shrinkwrap
   fi
 

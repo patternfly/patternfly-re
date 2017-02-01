@@ -112,7 +112,7 @@ cat <<- EEOOFF
     e       PatternFly Eng Release
     o       PatternFly Org
     p       PatternFly
-    r       PatternFly RCUE
+    r       RCUE
     w       PatternFly Web Components
 
 EEOOFF
@@ -142,7 +142,7 @@ EEOOFF
       p) PTNFLY=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY;
          SWITCH=p;;
-      r) PTNFLY_RCUE=1;
+      r) RCUE=1;
          REPO_SLUG=$REPO_SLUG_RCUE;
          SWITCH=r;;
       w) PTNFLY_WC=1;

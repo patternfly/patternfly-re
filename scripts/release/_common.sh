@@ -2,6 +2,7 @@
 
 # Setup env for use with GitHub
 #
+# Todo: gh-pages uses deploy keys instead of tokens; however, each repo must be enabled to use that
 git_setup()
 {
   echo "*** Setting up Git env"
@@ -40,7 +41,7 @@ setup_repo() {
   mkdir -p $TMP_DIR
   cd $TMP_DIR
 
-  git clone https://github.com/$1.git
+  git clone git@github.com/$1.git
   check $? "git clone failure"
 
   cd $DIR

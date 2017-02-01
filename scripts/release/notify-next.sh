@@ -27,15 +27,21 @@ email()
   echo "*** Notifying email list"
   mkdir -p $TMP_DIR
 
+  BLOG_VERSION=`echo "$VERSION" | sed "s|\.|-|g"`
+
 cat > $TMP_DIR/$TMP_FILE <<- EEOOFF
-The UXD team is proud to announce the $VERSION release of $2. This release includes the following changes.
+The UXD team is happy to announce the availability of our next $2 4 alpha release. Please try this alpha out and give us your feedback on any successes or failures.
 
-$RELEASE_NOTES
+Refer to the following resources for more details about this release:
 
-Check out the $2 $VERSION Release Notes for more details:
-https://github.com/$1/releases/tag/$RELEASE_TAG_PREFIX$VERSION
+PatternFly $VERSION Release blog:
+https://blog.patternfly.org/patternfly-$BLOG_VERSION-release/
 
-Thanks to everyone who participated in this release (both directly and indirectly) - your contributions are what keeps pushing PatternFly forward!
+PatternFly 4 migration guide:
+https://github.com/patternfly/patternfly/wiki/PatternFly-4-Migration-Guide
+
+Angular PatternFly 4 migration guide:
+https://github.com/patternfly/angular-patternfly/wiki/Angular-PatternFly-4-Migration-Guide
 
 - The Red Hat UXD team
 EEOOFF
@@ -49,29 +55,10 @@ EEOOFF
   rm -rf $TMP_DIR
 }
 
-# Fetch release notes from GitHub release
-#
-# $1: Repo slug
-fetch_notes()
-{
-  echo "*** Fetch notes"
-
-  RELEASE_NOTES=`curl -s https://api.github.com/repos/$1/releases/tags/$RELEASE_TAG_PREFIX$VERSION |
-                 node -pe "JSON.parse(require('fs').readFileSync('/dev/stdin').toString()).body"`
-  check $? "fetch notes failure"
-
-  if [ "$RELEASE_NOTES" = "undefined" ]; then
-    check 1 "Could not retrieve release notes.\nEnsure release has been published via GitHub."
-  fi
-}
-
 usage()
 {
 cat <<- EEOOFF
-    This script will send a release notice to the PatternFly, Angular PatternFly, and RCUE mailling lists.
-
-    After publishing a release notes via GitHub, the script will pull the markup using GitHub APIs. The markup is then
-    added to the body of the outgoing message.
+    This script will send a PF 'next' release notice to the PatternFly, Angular PatternFly, and RCUE mailling lists.
 
     Note: You must configure your system to tell it where to send email. If you haven't done so, see:
     http://codana.me/2014/11/23/sending-gmail-from-os-x-yosemite-terminal

@@ -111,7 +111,7 @@ cat <<- EEOOFF
     a       Angular PatternFly
     e       PatternFly Eng Release
     p       PatternFly
-    r       PatternFly RCUE
+    r       RCUE
 
 EEOOFF
 }
@@ -137,7 +137,7 @@ EEOOFF
       p) PTNFLY=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY;
          SWITCH=p;;
-      r) PTNFLY_RCUE=1;
+      r) RCUE=1;
          REPO_SLUG=$REPO_SLUG_RCUE;
          SWITCH=r;;
       \?) usage; exit 1;;
@@ -155,7 +155,7 @@ EEOOFF
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
     sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $NEXT_BRANCH
     sh -x $SCRIPT_DIR/_publish-branch.sh -d -b $NEXT_DIST_BRANCH
-  elif [ -n "$PTNFLY_RCUE" ]; then
+  elif [ -n "$RCUE" ]; then
     sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $NEXT_BRANCH
   else
     sh -x $SCRIPT_DIR/_publish-branch.sh -m

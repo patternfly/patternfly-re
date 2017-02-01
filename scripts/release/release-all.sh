@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 default()
 {
@@ -62,7 +62,7 @@ cat <<- EEOOFF
     e       PatternFly Eng Release
     o       PatternFly Org
     p       PatternFly
-    r       PatternFly RCUE
+    r       RCUE
     v       The version number (e.g., 3.15.0)
     w       PatternFly Web Components
 
@@ -111,7 +111,7 @@ EEOOFF
       p) PTNFLY=1;
          BUILD_DIR=$TMP_DIR/patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
-      r) PTNFLY_RCUE=1;
+      r) RCUE=1;
          BUILD_DIR=$TMP_DIR/rcue;
          REPO_SLUG=$REPO_SLUG_RCUE;;
       v) VERSION=$OPTARG;;
@@ -129,7 +129,7 @@ EEOOFF
 
   # Release PF 'next' branches
   if [ -n "$RELEASE_NEXT" ]; then
-    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_RCUE" ]; then
+    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" ]; then
       BRANCH=$NEXT_BRANCH
     fi
   fi

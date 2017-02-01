@@ -48,7 +48,7 @@ cat <<- EEOOFF
     e       PatternFly Eng Release
     o       PatternFly Org
     p       PatternFly
-    r       PatternFly RCUE
+    r       RCUE
     w       PatternFly Web Components
 
 EEOOFF
@@ -74,7 +74,7 @@ EEOOFF
          SWITCH=o;;
       p) PTNFLY=1;
          SWITCH=p;;
-      r) PTNFLY_RCUE=1;
+      r) RCUE=1;
          SWITCH=r;;
       w) PTNFLY_WC=1;
          SWITCH=w;;

@@ -57,7 +57,7 @@ cat <<- EEOOFF
     a       Angular PatternFly
     e       PatternFly Eng Release
     p       PatternFly
-    r       PatternFly RCUE
+    r       RCUE
     w       PatternFly Web Components
 
     SPECIAL OPTIONS:
