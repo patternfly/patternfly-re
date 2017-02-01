@@ -221,12 +221,12 @@ cat <<- EEOOFF
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
-    e       Patternfly Eng Release
+    e       PatternFly Eng Release
     o       PatternFly Org
     p       PatternFly
     r       PatternFly RCUE
     v       The version number (e.g., 3.15.0)
-    w       Patternfly Web Components
+    w       PatternFly Web Components
 
     SPECIAL OPTIONS:
     b       The branch to release (e.g., $NEXT_BRANCH)

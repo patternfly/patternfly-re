@@ -55,10 +55,10 @@ cat <<- EEOOFF
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
-    e       Patternfly Eng Release
+    e       PatternFly Eng Release
     p       PatternFly
     r       PatternFly RCUE
-    w       Patternfly Web Components
+    w       PatternFly Web Components
 
     SPECIAL OPTIONS:
     b       The branch to publish (e.g., $NEXT_BRANCH)

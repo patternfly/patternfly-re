@@ -96,7 +96,7 @@ cat <<- EEOOFF
 
     If a custom Git tag has been created to publish a release, the Git tag will be deleted first. Then, the appropriate
     scripts will be called to bump version numbers and publish the repo. Finally, a custom tag will be created to kick
-    off the release for the Angular Patternfly repo.
+    off the release for the Angular PatternFly repo.
 
     Note: Intended for use with Travis only.
 
@@ -109,7 +109,7 @@ cat <<- EEOOFF
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
-    e       Patternfly Eng Release
+    e       PatternFly Eng Release
     p       PatternFly
     r       PatternFly RCUE
 

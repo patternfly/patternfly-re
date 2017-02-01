@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Build Patternfly templates using Jekyll
+# Build PatternFly templates using Jekyll
 export PF_PAGE_BUILDER=jekyll
 
 # Email used to notify users release is available

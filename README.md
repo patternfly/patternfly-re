@@ -1,5 +1,5 @@
 # patternfly-eng-release
-A set of release engineering scripts for PatternFly, Angular Patternfly, Patternfly Org, and RCUE
+A set of release engineering scripts for PatternFly, Angular PatternFly, PatternFly Org, and RCUE
 
 ## Builds
 
@@ -13,15 +13,15 @@ Where applicable to each repo, the scripts may clone a new GitHub repo, bump the
 
 The automated release build begins with the build/release/release-all.sh script. This script will push a custom release tag to the repo's master branch, which triggers Travis to run the build/release/build.sh script. Version bump changes are pushed back to the master branch. The version bump and generated build changes are pushed to master-dist and tagged (e.g., v3.15.0).
 
-Release builds are chained together by pushing a new custom release tag to the next repo. For example, if the Patternfly RE release is successful, Patternfly is built next. If the Patternfly release is successful, RCUE and Angular Patternfly are built simultaneously. If Angular is successful, Patternfly Org is released as well.
+Release builds are chained together by pushing a new custom release tag to the next repo. For example, if the PatternFly RE release is successful, PatternFly is built next. If the PatternFly release is successful, RCUE and Angular PatternFly are built simultaneously. If Angular is successful, PatternFly Org is released as well.
 
-Should a release build fail at any point, it can be fixed and restarted. For example, If Angular Patternfly fails, it can be restarted and the Patternfly Org release will follow. We don't necessarily need to bump the npm version number again or rebuild Patternfy. The npm publish is one of the last steps in the build.
+Should a release build fail at any point, it can be fixed and restarted. For example, If Angular PatternFly fails, it can be restarted and the PatternFly Org release will follow. We don't necessarily need to bump the npm version number again or rebuild Patternfy. The npm publish is one of the last steps in the build.
 
 Of course, we still have the ability to run the release manually using the build/release/release.sh script. In fact, the release build uses this script itself.
 
 ### build/release/release-all.sh
 
-This script is used to automate and chain releases together. For example, when the Patternfly RE release is complete, Patternfly is built next. When the Patternfly release is complete, the release processes for Angular Patternfly and RCUE are kicked off simultaneously. When the Angular Patternfly release is complete, Patternfly Org shall be released as well.
+This script is used to automate and chain releases together. For example, when the PatternFly RE release is complete, PatternFly is built next. When the PatternFly release is complete, the release processes for Angular PatternFly and RCUE are kicked off simultaneously. When the Angular PatternFly release is complete, PatternFly Org shall be released as well.
 
 Although there is no PR to deal with here, creating release notes is still a task which must be performed manually via GitHub.
 
@@ -36,7 +36,7 @@ Builds can only be stopped via the Travis CI.
 
 ### build/release/notify.sh
 
-This script will send community email to the Patternfly and Angular Patternfly mailling lists.
+This script will send community email to the PatternFly and Angular PatternFly mailling lists.
 
 After publishing a release notes via GitHub, this script will pull markup using GitHub APIs. The release note markup is then added to the body of the outgoing message.
 
