@@ -53,15 +53,15 @@ It is expected that the following environment variables are set via Travis CI.
 - NPM_USER: A user with permission to npm publish.
 - NPM_PWD: The password of the user with permission to npm publish.
 
-## Dev Release
+## Next Release
 
-For dev releases (e.g., PF4 aplha, beta, etc.), the following variables may be overridden.
+For PF 'next' releases (e.g., PF4 aplha, beta, etc.), the following variables may be overridden.
 
-- DEV_BRANCH=branch-4.0-dev
-- DEV_DIST_BRANCH=branch-4.0-dev-dist
+- NEXT_BRANCH=branch-4.0-dev
+- NEXT_DIST_BRANCH=branch-4.0-dev-dist
 
 1. Bump the version number, build, etc., starting with the patternfly-eng-release repo
- - Run sh ./build/release/release-all.sh -v 4.0.0.1 -e -d
+ - Run sh ./build/release/release-all.sh -v 4.0.0-alpha.1 -e -n
 
 Note: Environment variables must be committed for the automated release, but may be overridden locally for manual releases.
 

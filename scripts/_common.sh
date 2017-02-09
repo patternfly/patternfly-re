@@ -9,10 +9,14 @@ build()
 
   # Grunt build
   if [ -s "$GRUNT_FILE_JS" ]; then
+    JUNK=`grep production "$GRUNT_FILE_JS"`
+    if [ "$?" -eq 0 ]; then
+      PRODUCTION=:production
+    fi
     if [ -s "$GEM_FILE" ]; then
-      bundle exec grunt build
+      bundle exec grunt build$PRODUCTION
     else
-      grunt build
+      grunt build$PRODUCTION
     fi
   elif [ -s "$GULP_FILE_JS" ]; then
     gulp build
