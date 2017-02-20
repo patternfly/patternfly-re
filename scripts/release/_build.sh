@@ -146,6 +146,7 @@ EEOOFF
          REPO_SLUG=$REPO_SLUG_RCUE;
          SWITCH=r;;
       w) PTNFLY_WC=1;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_WC;
          SWITCH=w;;
       \?) usage; exit 1;;
     esac
@@ -159,7 +160,7 @@ EEOOFF
   check $? "bump version failure"
 
   # Push version bump and generated files to master and dist branches
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
     sh -x $SCRIPT_DIR/_publish-branch.sh -m -d
   else
     sh -x $SCRIPT_DIR/_publish-branch.sh -m
