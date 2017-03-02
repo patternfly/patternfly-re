@@ -259,7 +259,8 @@ verify()
     fi
   fi
   if [ -s "$2/$BOWER_JSON" ]; then
-    bower install $2/$BOWER_JSON
+    cp $2/$BOWER_JSON .
+    bower install
     check $? "bower install failure"
   fi
 }
