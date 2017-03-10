@@ -2,7 +2,7 @@
 
 default()
 {
-  PATH=/bin:/usr/bin:/usr/local/bin:$PATH
+  PATH=/usr/local/bin:/usr/bin:/bin:$PATH
   export PATH
 
   SCRIPT=`basename $0`

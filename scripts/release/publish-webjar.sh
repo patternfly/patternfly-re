@@ -4,7 +4,7 @@ default()
 {
   # Add paths to env (non-Travis build)
   if [ -z "$TRAVIS" ]; then
-    PATH=/bin:/usr/bin:/usr/local/bin:$PATH
+    PATH=/usr/local/bin:/usr/bin:/bin:$PATH
     export PATH
   fi
 
