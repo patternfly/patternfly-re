@@ -38,7 +38,7 @@ cat <<- EEOOFF
 
     Note: Intended for use with Travis only.
 
-    sh [-x] $SCRIPT [-h] -a|e|o|p|r|w
+    sh [-x] $SCRIPT [-h] -a|e|o|p|r|w|x
 
     Example: sh $SCRIPT -p
 
@@ -50,6 +50,7 @@ cat <<- EEOOFF
     p       PatternFly
     r       RCUE
     w       PatternFly Web Components
+    x       Patternfly NG
 
 EEOOFF
 }
@@ -63,7 +64,7 @@ EEOOFF
     exit 1
   fi
 
-  while getopts haeoprw c; do
+  while getopts haeoprwx c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -78,6 +79,8 @@ EEOOFF
          SWITCH=r;;
       w) PTNFLY_WC=1;
          SWITCH=w;;
+      x) PTNFLY_NG=1;
+         SWITCH=x;;
       \?) usage; exit 1;;
     esac
   done
@@ -99,7 +102,7 @@ EEOOFF
 
     # Skip publish for pull requests and tags
     if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
-      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
+      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
         sh -x $SCRIPT_DIR/_publish-branch.sh
         check $? "Publish failure"
       fi

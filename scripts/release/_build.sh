@@ -102,7 +102,7 @@ cat <<- EEOOFF
 
     AUTH_TOKEN must be set via Travis CI.
 
-    sh [-x] $SCRIPT [-h] -a|e|o|p|r|w
+    sh [-x] $SCRIPT [-h] -a|e|o|p|r|w|x
 
     Example: sh $SCRIPT -p
 
@@ -114,6 +114,7 @@ cat <<- EEOOFF
     p       PatternFly
     r       RCUE
     w       PatternFly Web Components
+    x       Patternfly NG
 
 EEOOFF
 }
@@ -127,7 +128,7 @@ EEOOFF
     exit 1
   fi
 
-  while getopts haeoprw c; do
+  while getopts haeoprwx c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -148,6 +149,9 @@ EEOOFF
       w) PTNFLY_WC=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY_WC;
          SWITCH=w;;
+      x) PTNFLY_NG=1;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_NG;
+         SWITCH=x;;
       \?) usage; exit 1;;
     esac
   done
@@ -160,7 +164,7 @@ EEOOFF
   check $? "bump version failure"
 
   # Push version bump and generated files to master and dist branches
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
     sh -x $SCRIPT_DIR/_publish-branch.sh -m -d
   else
     sh -x $SCRIPT_DIR/_publish-branch.sh -m

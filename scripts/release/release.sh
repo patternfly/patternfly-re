@@ -46,6 +46,9 @@ bump_bower()
   elif [ -n "$PTNFLY_ANGULAR" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
+  elif [ -n "$PTNFLY_NG" ]; then
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ORG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" | \
@@ -82,6 +85,10 @@ bump_package()
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
+    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
+  elif [ -n "$PTNFLY_NG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
     sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
@@ -214,7 +221,7 @@ cat <<- EEOOFF
 
     Note: After changes are pushed, a PR will need to be created via GitHub.
 
-    sh [-x] $SCRIPT [-h|b|f|g|n|s] -a|e|o|p|r|w -v <version>
+    sh [-x] $SCRIPT [-h|b|f|g|n|s] -a|e|o|p|r|w|x -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -p
 
@@ -227,6 +234,7 @@ cat <<- EEOOFF
     r       RCUE
     v       The version number (e.g., 3.15.0)
     w       PatternFly Web Components
+    x       Patternfly NG
 
     SPECIAL OPTIONS:
     b       The branch to release (e.g., $NEXT_BRANCH)
@@ -285,7 +293,7 @@ verify()
     exit 1
   fi
 
-  while getopts hab:efgnoprsv:w c; do
+  while getopts hab:efgnoprsv:wx c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -319,6 +327,10 @@ verify()
          BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
          REPO_SLUG=$REPO_SLUG_PTNFLY_WC;
          VERIFY_DIR="$TMP_DIR/patternfly-webcomponents-verify";;
+      x) PTNFLY_NG=1;
+         BUILD_DIR=$TMP_DIR/patternfly-ng;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_NG;
+         VERIFY_DIR="$TMP_DIR/patternfly-ng";;
       \?) usage; exit 1;;
     esac
   done

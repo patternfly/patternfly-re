@@ -52,7 +52,7 @@ cat <<- EEOOFF
 
     Note: Builds can only be stopped via the Travis UI: https://travis-ci.org/patternfly
 
-    sh [-x] $SCRIPT [-h|f|n] -a|e|o|p|r|w -v <version>
+    sh [-x] $SCRIPT [-h|f|n] -a|e|o|p|r|w|x -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -e
 
@@ -65,6 +65,7 @@ cat <<- EEOOFF
     r       RCUE
     v       The version number (e.g., 3.15.0)
     w       PatternFly Web Components
+    x       Patternfly NG
 
     SPECIAL OPTIONS:
     f       Run against repo fork matching local username (e.g., `whoami`/patternfly)
@@ -77,7 +78,7 @@ EEOOFF
 {
   # Source env.sh afer setting REPO_FORK
   if [ -z "$TRAVIS" ]; then
-    while getopts haefnoprv:w c; do
+    while getopts haefnoprv:wx c; do
       case $c in
         f) REPO_FORK=1;;
         \?) ;;
@@ -93,7 +94,7 @@ EEOOFF
     exit 1
   fi
 
-  while getopts haefnoprv:w c; do
+  while getopts haefnoprv:wx c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -118,6 +119,9 @@ EEOOFF
       w) PTNFLY_WC=1;
          BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
          REPO_SLUG=$REPO_SLUG_PTNFLY_WC;;
+      x) PTNFLY_NG=1;
+         BUILD_DIR=$TMP_DIR/patternfly-ng;
+         REPO_SLUG=$REPO_SLUG_PTNFLY_NG;;
       \?) usage; exit 1;;
     esac
   done

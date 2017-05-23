@@ -79,7 +79,7 @@ cat <<- EEOOFF
 
     This script will publish webjars from published npm packages.
 
-    sh [-x] $SCRIPT [-h|n] -a|p -v 3.15.0
+    sh [-x] $SCRIPT [-h|n] -a|p|x -v 3.15.0
 
     Example: sh $SCRIPT -p
 
@@ -88,6 +88,7 @@ cat <<- EEOOFF
     a       Angular PatternFly
     p       PatternFly
     v       The version number (e.g., 3.15.0)
+    x       PatternFly NG
 
     SPECIAL OPTIONS:
     n       The package name (overrides -a|p switches)
@@ -104,13 +105,14 @@ EEOOFF
     exit 1
   fi
 
-  while getopts han:pv: c; do
+  while getopts han:pv:x c; do
     case $c in
       h) usage; exit 0;;
       a) REPO_NAME=$REPO_NAME_PTNFLY_ANGULAR;;
       n) OVERRIDE_REPO_NAME=$OPTARG;;
       p) REPO_NAME=$REPO_NAME_PTNFLY;;
       v) VERSION=$OPTARG;;
+      x) REPO_NAME=$REPO_NAME_PTNFLY_NG;;
       \?) usage; exit 1;;
     esac
   done
