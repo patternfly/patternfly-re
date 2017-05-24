@@ -7,8 +7,13 @@ build()
   echo "*** Building `pwd`"
   cd $BUILD_DIR
 
+  # NPM script build
+  JUNK=`npm run | grep build`
+
   # Grunt build
-  if [ -s "$GRUNT_FILE_JS" ]; then
+  if [ "$?" -eq 0 ]; then
+    npm run build
+  elif [ -s "$GRUNT_FILE_JS" ]; then
     JUNK=`grep production "$GRUNT_FILE_JS"`
     if [ "$?" -eq 0 ]; then
       PRODUCTION=:production

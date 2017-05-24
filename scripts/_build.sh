@@ -24,6 +24,8 @@ prereqs()
     # Get version from tag
     case "$TRAVIS_TAG" in
       $BUMP_NEXT_TAG_PREFIX* ) RELEASE_NEXT=1;;
+      $BUMP_NEXT_CHAIN_TAG_PREFIX* ) RELEASE_NEXT=1;;
+      $BUMP_CHAIN_TAG_PREFIX* ) RELEASE=1;;
       $BUMP_TAG_PREFIX* ) RELEASE=1;;
       *) echo "$TRAVIS_TAG is not a recognized format. Do not release!";;
     esac

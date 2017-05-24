@@ -27,8 +27,8 @@ add_bump_tag()
   git fetch $1 $2:$3 # <remote-branch>:<local-branch>
   check $? "git fetch failure"
   git checkout $3
-  git tag $BUMP_TAG_PREFIX$VERSION -f
-  git push $1 tag $BUMP_TAG_PREFIX$VERSION
+  git tag $BUMP_CHAIN_TAG_PREFIX$VERSION -f
+  git push $1 tag $BUMP_CHAIN_TAG_PREFIX$VERSION
   check $? "git push tag failure"
 }
 
@@ -54,8 +54,13 @@ delete_bump_tag()
   cd $BUILD_DIR
 
   # Remove bump tag
-  git tag -d $BUMP_TAG_PREFIX$VERSION
-  git push upstream :refs/tags/$BUMP_TAG_PREFIX$VERSION
+  if [ -n "$SKIP_CHAINED_RELEASE" ]; then
+    git tag -d $BUMP_TAG_PREFIX$VERSION
+    git push upstream :refs/tags/$BUMP_TAG_PREFIX$VERSION
+  else
+    git tag -d $BUMP_CHAIN_TAG_PREFIX$VERSION
+    git push upstream :refs/tags/$BUMP_CHAIN_TAG_PREFIX$VERSION
+  fi
   check $? "delete tag failure"
 }
 
@@ -70,7 +75,11 @@ prereqs()
 
     # Get version from tag
     case "$TRAVIS_TAG" in
-      $BUMP_TAG_PREFIX* ) VERSION=`echo "$TRAVIS_TAG" | cut -c $BUMP_TAG_PREFIX_COUNT-`;;
+      $BUMP_TAG_PREFIX* )
+        VERSION=`echo "$TRAVIS_TAG" | cut -c $BUMP_TAG_PREFIX_COUNT-`;
+        SKIP_CHAINED_RELEASE=1;;
+      $BUMP_CHAIN_TAG_PREFIX* )
+        VERSION=`echo "$TRAVIS_TAG" | cut -c $BUMP_CHAIN_TAG_PREFIX_COUNT-`;;
       *) check 1 "$TRAVIS_TAG is not a recognized format. Do not release!";;
     esac
   fi
@@ -188,12 +197,14 @@ EEOOFF
   add_release_tag # Add release tag
 
   # Kick off next version bump in chained release
-  if [ -n "$PTNFLY" ]; then
-    add_bump_tag $REPO_NAME_PTNFLY_ANGULAR $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ANGULAR
-    add_bump_tag $REPO_NAME_RCUE $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_RCUE
-  elif [ -n "$PTNFLY_ANGULAR" ]; then
-    add_bump_tag $REPO_NAME_PTNFLY_ORG $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ORG
-  elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
-    add_bump_tag $REPO_NAME_PTNFLY $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY
+  if [ -z "$SKIP_CHAINED_RELEASE" ]; then
+    if [ -n "$PTNFLY" ]; then
+      add_bump_tag $REPO_NAME_PTNFLY_ANGULAR $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ANGULAR
+      add_bump_tag $REPO_NAME_RCUE $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_RCUE
+    elif [ -n "$PTNFLY_ANGULAR" ]; then
+      add_bump_tag $REPO_NAME_PTNFLY_ORG $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ORG
+    elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
+      add_bump_tag $REPO_NAME_PTNFLY $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY
+    fi
   fi
 }

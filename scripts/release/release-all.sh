@@ -14,7 +14,6 @@ default()
   . $SCRIPT_DIR/_common.sh
 
   BRANCH=$RELEASE_BRANCH
-  TAG_PREFIX=$BUMP_TAG_PREFIX
   TMP_DIR="/tmp/patternfly-repos"
 }
 
@@ -52,7 +51,7 @@ cat <<- EEOOFF
 
     Note: Builds can only be stopped via the Travis UI: https://travis-ci.org/patternfly
 
-    sh [-x] $SCRIPT [-h|f|n] -a|e|o|p|r|w|x -v <version>
+    sh [-x] $SCRIPT [-h|f|n|s] -a|e|o|p|r|w|x -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -e
 
@@ -68,6 +67,7 @@ cat <<- EEOOFF
     x       Patternfly NG
 
     SPECIAL OPTIONS:
+    s       Skip chained releases.
     f       Run against repo fork matching local username (e.g., `whoami`/patternfly)
     n       Release PF 'next' branches (e.g., PF4 alpha, beta, etc.)
 
@@ -78,7 +78,7 @@ EEOOFF
 {
   # Source env.sh afer setting REPO_FORK
   if [ -z "$TRAVIS" ]; then
-    while getopts haefnoprv:wx c; do
+    while getopts haefnoprsv:wx c; do
       case $c in
         f) REPO_FORK=1;;
         \?) ;;
@@ -94,7 +94,7 @@ EEOOFF
     exit 1
   fi
 
-  while getopts haefnoprv:wx c; do
+  while getopts haefnoprsv:wx c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
@@ -104,8 +104,7 @@ EEOOFF
          BUILD_DIR=$TMP_DIR/patternfly-eng-release;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
       f) ;;
-      n) RELEASE_NEXT=1;
-         TAG_PREFIX=$BUMP_NEXT_TAG_PREFIX;;
+      n) RELEASE_NEXT=1;;
       o) PTNFLY_ORG=1;
          BUILD_DIR=$TMP_DIR/patternfly-org;
          REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;;
@@ -115,6 +114,7 @@ EEOOFF
       r) RCUE=1;
          BUILD_DIR=$TMP_DIR/rcue;
          REPO_SLUG=$REPO_SLUG_RCUE;;
+      s) SKIP_CHAINED_RELEASE=1;;
       v) VERSION=$OPTARG;;
       w) PTNFLY_WC=1;
          BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
@@ -131,10 +131,24 @@ EEOOFF
     exit 1
   fi
 
-  # Release PF 'next' branches
+  # Release PF Next branches
   if [ -n "$RELEASE_NEXT" ]; then
     if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" ]; then
       BRANCH=$NEXT_BRANCH
+    fi
+  fi
+
+  if [ -n "$SKIP_CHAINED_RELEASE" ]; then
+    if [ -n "$RELEASE_NEXT" ]; then
+      TAG_PREFIX=$BUMP_NEXT_TAG_PREFIX
+    else
+      TAG_PREFIX=$BUMP_TAG_PREFIX
+    fi
+  else
+    if [ -n "$RELEASE_NEXT" ]; then
+      TAG_PREFIX=$BUMP_NEXT_CHAIN_TAG_PREFIX
+    else
+      TAG_PREFIX=$BUMP_CHAIN_TAG_PREFIX
     fi
   fi
 

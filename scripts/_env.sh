@@ -21,13 +21,21 @@ NEXT_BRANCH=branch-4.0-dev
 NEXT_DIST_BRANCH=branch-4.0-dev-dist
 NEXT_TAG=next
 
-# Prefix for tagging version bump (e.g., _bump-v3.15.0)
+# Tag prefix for bumping version of a single repo (e.g., _bump-v3.15.0)
 BUMP_TAG_PREFIX=_bump-v
 BUMP_TAG_PREFIX_COUNT=`echo $BUMP_TAG_PREFIX | wc -c`
 
-# Prefix for tagging PF 'next' version bump (e.g., _bump_next-v4.0.0)
+# Tag prefix for chaining version bumps with multiple repos (e.g., _bump_chain-v3.15.0)
+BUMP_CHAIN_TAG_PREFIX=_bump_chain-v
+BUMP_CHAIN_TAG_PREFIX_COUNT=`echo $BUMP_CHAIN_TAG_PREFIX | wc -c`
+
+# Tag prefix for PF 'next' version bump (e.g., _bump_next-v4.0.0)
 BUMP_NEXT_TAG_PREFIX=_bump_next-v
 BUMP_NEXT_TAG_PREFIX_COUNT=`echo $BUMP_NEXT_TAG_PREFIX | wc -c`
+
+# Tag prefix for chaining PF 'next' version bumps with multiple repos (e.g., _bump_next-v4.0.0)
+BUMP_NEXT_CHAIN_TAG_PREFIX=_bump_next_chain-v
+BUMP_NEXT_CHAIN_TAG_PREFIX_COUNT=`echo $BUMP_NEXT_CHAIN_TAG_PREFIX | wc -c`
 
 # Prefix used for tagging release (e.g., v3.15.0)
 RELEASE_TAG_PREFIX=v
