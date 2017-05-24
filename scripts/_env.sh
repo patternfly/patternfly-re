@@ -114,5 +114,5 @@ JSDOC_CONF_JSON=jsdocConfig.json
 KARMA_CONF_JS=karma.conf.js
 NSP=node_modules/nsp/bin/nsp
 PACKAGE_JSON=package.json
-PTNFLY_SETTINGS_JS=src/js/patternfly-settings.js
+PTNFLY_SETTINGS_JS=src/js/patternfly-settings-base.js
 SHRINKWRAP_JSON=npm-shrinkwrap.json
