@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Build repo
 #
@@ -65,7 +65,12 @@ build_install()
   # Bower install
   if [ -s "$BOWER_JSON" ]; then
     bower install
-    check $? "bower install failure"
+    checkval=$?
+    if [ $checkval -ne 0 ]; then
+      echo "$BOWER_JSON contents:"
+      cat $BOWER_JSON
+      check $checkval "bower install failure"
+    fi
   fi
 }
 
