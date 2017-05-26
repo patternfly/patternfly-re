@@ -37,15 +37,17 @@ bump_bower()
     PKG_PTNFLY="git://$REPO_URL_PTNFLY#$BRANCH_DIST"
     PKG_PTNFLY_ANGULAR="git://$REPO_URL_PTNFLY_ANGULAR#$BRANCH_DIST"
   else
-    PKG_PTNFLY=~$VERSION
-    PKG_PTNFLY_ANGULAR=~$VERSION
+    PKG_PTNFLY=`npm show patternfly version`
+    PKG_PTNFLY_ANGULAR=`npm show angular-patternfly version`
   fi
 
   if [ -n "$PTNFLY" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
+    # Removed Patternfy bump from a-pf release
+    #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" $BOWER_JSON > $BOWER_JSON.tmp
+
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_NG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
@@ -77,16 +79,18 @@ bump_package()
     PKG_PTNFLY="git+https://$REPO_URL_PTNFLY#$BRANCH_DIST"
     PKG_PTNFLY_ENG_RELEASE="git+https://$REPO_URL_PTNFLY_ENG_RELEASE"
   else
-    PKG_PTNFLY=~$VERSION
-    PKG_PTNFLY_ENG_RELEASE=~$VERSION
+    PKG_PTNFLY=`npm show patternfly version`
+    PKG_PTNFLY_ENG_RELEASE=`npm show patternfly-eng-release version`
   fi
 
   if [ -n "$PTNFLY" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
+    # Removed Patternfy bump from a-pf release
+    #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
+
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
     sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_NG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
