@@ -29,7 +29,11 @@ publish_npm()
 
   # Log into npm
   if [ -n "$NPM_USER" -a -n "$NPM_PWD" ]; then
-    printf "$NPM_USER\n$NPM_PWD\n$NPM_USER@redhat.com" | npm login
+    npm adduser <<!
+$NPM_USER
+$NPM_PWD
+$NPM_USER@redhat.com
+!
     check $? "npm login failure"
   fi
 
