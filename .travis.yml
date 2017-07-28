@@ -6,6 +6,6 @@ before_install:
   - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 
 script:
-  - sh -x ./scripts/_build.sh -e
+  - ./scripts/_build.sh -e
 
 after_success:
