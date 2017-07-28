@@ -157,23 +157,23 @@ EEOOFF
   git_setup
 
   # Bump version numbers, build, and test
-  sh -x $SCRIPT_DIR/release.sh -s -n -v $VERSION -$SWITCH
+  $SCRIPT_DIR/release.sh -s -n -v $VERSION -$SWITCH
   check $? "bump version failure"
 
   # Push version bump and generated files to master and dist branches
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
-    sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $NEXT_BRANCH
-    sh -x $SCRIPT_DIR/_publish-branch.sh -d -b $NEXT_DIST_BRANCH
+    $SCRIPT_DIR/_publish-branch.sh -m -b $NEXT_BRANCH
+    $SCRIPT_DIR/_publish-branch.sh -d -b $NEXT_DIST_BRANCH
   elif [ -n "$RCUE" ]; then
-    sh -x $SCRIPT_DIR/_publish-branch.sh -m -b $NEXT_BRANCH
+    $SCRIPT_DIR/_publish-branch.sh -m -b $NEXT_BRANCH
   else
-    sh -x $SCRIPT_DIR/_publish-branch.sh -m
+    $SCRIPT_DIR/_publish-branch.sh -m
   fi
   check $? "Publish failure"
 
   # NPM publish
   if [ -z "$SKIP_NPM_PUBLISH" ]; then
-    sh -x $SCRIPT_DIR/publish-npm.sh -n -s -$SWITCH
+    $SCRIPT_DIR/publish-npm.sh -n -s -$SWITCH
     check $? "npm publish failure"
   fi
 

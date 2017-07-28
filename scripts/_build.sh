@@ -92,10 +92,10 @@ EEOOFF
 
   # Release must remove shrinkwrap prior to install; thus, the Travis install is turned off
   if [ -n "$RELEASE" ]; then
-    sh -x $SCRIPT_DIR/release/_build.sh -$SWITCH
+    $SCRIPT_DIR/release/_build.sh -$SWITCH
     check $? "Release failure"
   elif [ -n "$RELEASE_NEXT" ]; then
-    sh -x $SCRIPT_DIR/release/_build-next.sh -$SWITCH
+    $SCRIPT_DIR/release/_build-next.sh -$SWITCH
     check $? "Release failure"
   else
     build_install
@@ -105,7 +105,7 @@ EEOOFF
     # Skip publish for pull requests and tags
     if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
       if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
-        sh -x $SCRIPT_DIR/_publish-branch.sh
+        $SCRIPT_DIR/_publish-branch.sh
         check $? "Publish failure"
       fi
     fi
