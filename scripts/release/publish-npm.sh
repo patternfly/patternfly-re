@@ -27,13 +27,9 @@ publish_npm()
   echo "*** Publishing npm"
   cd $BUILD_DIR
 
-  # Log into npm
-  if [ -n "$NPM_USER" -a -n "$NPM_PWD" ]; then
-    npm adduser <<!
-$NPM_USER
-$NPM_PWD
-$NPM_USER@redhat.com
-!
+  # Log into npm if not already logged in
+  if [[ $(npm whoami 2> /dev/null) != 'patternfly-build' && -n "$NPM_USER" && -n "$NPM_PWD" ]]; then
+    printf "$NPM_USER\n$NPM_PWD\n$NPM_USER@redhat.com" | npm login
     check $? "npm login failure"
   fi
 
