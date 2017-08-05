@@ -279,17 +279,6 @@ verify()
 
 # main()
 {
-  # Source env.sh afer setting REPO_FORK
-  if [ -z "$TRAVIS" ]; then
-    while getopts hab:efgnoprsv:w c; do
-      case $c in
-        f) REPO_FORK=1;;
-        \?) ;;
-      esac
-    done
-    unset OPTIND
-  fi
-
   default
 
   if [ "$#" -eq 0 ]; then
@@ -300,44 +289,64 @@ verify()
   while getopts hab:efgnoprsv:wx c; do
     case $c in
       h) usage; exit 0;;
-      a) PTNFLY_ANGULAR=1;
-         BUILD_DIR=$TMP_DIR/angular-patternfly;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;
-         VERIFY_DIR="$TMP_DIR/angular-patternfly-verify";;
+      a) PTNFLY_ANGULAR=1;;
       b) BRANCH=$OPTARG;;
-      e) PTNFLY_ENG_RELEASE=1;
-         BUILD_DIR=$TMP_DIR/patternfly-eng-release;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;
-         VERIFY_DIR="$TMP_DIR/patternfly-eng-release-verify";;
-      f) ;;
+      e) PTNFLY_ENG_RELEASE=1;;
+      f) REPO_FORK=1;;
       g) PUSH=1;;
       n) BRANCH_DIST=$NEXT_DIST_BRANCH;;
-      o) PTNFLY_ORG=1;
-         BUILD_DIR=$TMP_DIR/patternfly-org;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;
-         VERIFY_DIR="$TMP_DIR/patternfly-org-verify";;
-      p) PTNFLY=1;
-         BUILD_DIR=$TMP_DIR/patternfly;
-         REPO_SLUG=$REPO_SLUG_PTNFLY;
-         VERIFY_DIR="$TMP_DIR/patternfly-verify";;
-      r) RCUE=1;
-         BUILD_DIR=$TMP_DIR/rcue;
-         REPO_SLUG=$REPO_SLUG_RCUE;
-         VERIFY_DIR="$TMP_DIR/rcue-verify";;
+      o) PTNFLY_ORG=1;;
+      p) PTNFLY=1;;
+      r) RCUE=1;;
       s) SKIP_SETUP=1;;
       v) VERSION=$OPTARG;
          BUMP_BRANCH=bump-v$VERSION;;
-      w) PTNFLY_WC=1;
-         BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_WC;
-         VERIFY_DIR="$TMP_DIR/patternfly-webcomponents-verify";;
-      x) PTNFLY_NG=1;
-         BUILD_DIR=$TMP_DIR/patternfly-ng;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_NG;
-         VERIFY_DIR="$TMP_DIR/patternfly-ng";;
+      w) PTNFLY_WC=1;;
+      x) PTNFLY_NG=1;;
       \?) usage; exit 1;;
     esac
   done
+
+  # Source env.sh afer setting REPO_FORK
+  if [ -n "$REPO_FORK" ]; then
+    default
+  fi
+
+  if [ -n "$PTNFLY_ANGULAR" ]; then
+    BUILD_DIR=$TMP_DIR/angular-patternfly
+    REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR
+    VERIFY_DIR="$TMP_DIR/angular-patternfly-verify"
+  fi
+  if [ -n "$PTNFLY_ENG_RELEASE" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly-eng-release
+    REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE
+    VERIFY_DIR="$TMP_DIR/patternfly-eng-release-verify"
+  fi
+  if [ -n "$PTNFLY_ORG" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly-org
+    REPO_SLUG=$REPO_SLUG_PTNFLY_ORG
+    VERIFY_DIR="$TMP_DIR/patternfly-org-verify"
+  fi
+  if [ -n "$PTNFLY" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly
+    REPO_SLUG=$REPO_SLUG_PTNFLY
+    VERIFY_DIR="$TMP_DIR/patternfly-verify"
+  fi
+  if [ -n "$RCUE" ]; then
+    BUILD_DIR=$TMP_DIR/rcue
+    REPO_SLUG=$REPO_SLUG_RCUE
+    VERIFY_DIR="$TMP_DIR/rcue-verify"
+  fi
+  if [ -n "$PTNFLY_WC" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly-webcomponents
+    REPO_SLUG=$REPO_SLUG_PTNFLY_WC
+    VERIFY_DIR="$TMP_DIR/patternfly-webcomponents-verify"
+  fi
+  if [ -n "$PTNFLY_NG" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly-ng
+    REPO_SLUG=$REPO_SLUG_PTNFLY_NG
+    VERIFY_DIR="$TMP_DIR/patternfly-ng"
+  fi
 
   if [ -z "$VERSION" -o -z "$REPO_SLUG" ]; then
     usage
