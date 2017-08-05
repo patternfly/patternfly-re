@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 default()
 {
@@ -169,27 +169,27 @@ EEOOFF
   git_setup
 
   # Bump version numbers, build, and test
-  $SCRIPT_DIR/release.sh -s -v $VERSION -$SWITCH
+  sh -x $SCRIPT_DIR/release.sh -s -v $VERSION -$SWITCH
   check $? "bump version failure"
 
   # Push version bump and generated files to master and dist branches
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
-    $SCRIPT_DIR/_publish-branch.sh -m -d
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m -d
   else
-    $SCRIPT_DIR/_publish-branch.sh -m
+    sh -x $SCRIPT_DIR/_publish-branch.sh -m
   fi
   check $? "Publish failure"
 
   # NPM publish
   if [ -z "$SKIP_NPM_PUBLISH" -a -z "$PTNFLY_ORG" ]; then
-    $SCRIPT_DIR/publish-npm.sh -s -$SWITCH
+    sh -x $SCRIPT_DIR/publish-npm.sh -s -$SWITCH
     check $? "npm publish failure"
   fi
 
   # Webjar publish
   if [ -z "$SKIP_WEBJAR_PUBLISH" ]; then
     if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
-      $SCRIPT_DIR/publish-webjar.sh -v $VERSION -$SWITCH
+      sh -x $SCRIPT_DIR/publish-webjar.sh -v $VERSION -$SWITCH
       check $? "webjar publish failure"
     fi
   fi

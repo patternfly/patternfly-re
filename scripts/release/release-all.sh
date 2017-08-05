@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 default()
 {
@@ -76,17 +76,6 @@ EEOOFF
 
 # main()
 {
-  # Source env.sh afer setting REPO_FORK
-  if [ -z "$TRAVIS" ]; then
-    while getopts haefnoprsv:wx c; do
-      case $c in
-        f) REPO_FORK=1;;
-        \?) ;;
-      esac
-    done
-    unset OPTIND
-  fi
-
   default
 
   if [ "$#" -eq 0 ]; then
@@ -97,34 +86,54 @@ EEOOFF
   while getopts haefnoprsv:wx c; do
     case $c in
       h) usage; exit 0;;
-      a) PTNFLY_ANGULAR=1;
-         BUILD_DIR=$TMP_DIR/angular-patternfly;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR;;
-      e) PTNFLY_ENG_RELEASE=1;
-         BUILD_DIR=$TMP_DIR/patternfly-eng-release;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE;;
-      f) ;;
+      a) PTNFLY_ANGULAR=1;;
+      e) PTNFLY_ENG_RELEASE=1;;
+      f) REPO_FORK=1;;
       n) RELEASE_NEXT=1;;
-      o) PTNFLY_ORG=1;
-         BUILD_DIR=$TMP_DIR/patternfly-org;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_ORG;;
-      p) PTNFLY=1;
-         BUILD_DIR=$TMP_DIR/patternfly;
-         REPO_SLUG=$REPO_SLUG_PTNFLY;;
-      r) RCUE=1;
-         BUILD_DIR=$TMP_DIR/rcue;
-         REPO_SLUG=$REPO_SLUG_RCUE;;
+      o) PTNFLY_ORG=1;;
+      p) PTNFLY=1;;
+      r) RCUE=1;;
       s) SKIP_CHAINED_RELEASE=1;;
       v) VERSION=$OPTARG;;
-      w) PTNFLY_WC=1;
-         BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_WC;;
-      x) PTNFLY_NG=1;
-         BUILD_DIR=$TMP_DIR/patternfly-ng;
-         REPO_SLUG=$REPO_SLUG_PTNFLY_NG;;
+      w) PTNFLY_WC=1;;
+      x) PTNFLY_NG=1;;
       \?) usage; exit 1;;
     esac
   done
+
+  # Source env.sh afer setting REPO_FORK
+  if [ -n "$REPO_FORK" ]; then
+    default
+  fi
+
+  if [ -n "PTNFLY_ANGULAR" ]; then
+    BUILD_DIR=$TMP_DIR/angular-patternfly
+    REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR
+  fi
+  if [ -n "PTNFLY_ENG_RELEASE" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly-eng-release
+    REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE
+  fi
+  if [ -n "PTNFLY_ORG" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly-org
+    REPO_SLUG=$REPO_SLUG_PTNFLY_ORG
+  fi
+  if [ -n "PTNFLY" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly
+    REPO_SLUG=$REPO_SLUG_PTNFLY
+  fi
+  if [ -n "RCUE" ]; then
+    BUILD_DIR=$TMP_DIR/rcue
+    REPO_SLUG=$REPO_SLUG_RCUE
+  fi
+  if [ -n "PTNFLY_WC" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly-webcomponents
+    REPO_SLUG=$REPO_SLUG_PTNFLY_WC
+  fi
+  if [ -n "PTNFLY_NG" ]; then
+    BUILD_DIR=$TMP_DIR/patternfly-ng
+    REPO_SLUG=$REPO_SLUG_PTNFLY_NG
+  fi
 
   if [ -z "$VERSION" -o -z "$REPO_SLUG" ]; then
     usage

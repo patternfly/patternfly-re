@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 #
 # Note: When run against a tag, TRAVIS_BRANCH won't equal the branch name "master", but whatever was given as
