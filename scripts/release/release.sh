@@ -312,37 +312,37 @@ verify()
     default
   fi
 
-  if [ -n "PTNFLY_ANGULAR" ]; then
+  if [ -n "$PTNFLY_ANGULAR" ]; then
     BUILD_DIR=$TMP_DIR/angular-patternfly
     REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR
     VERIFY_DIR="$TMP_DIR/angular-patternfly-verify"
   fi
-  if [ -n "PTNFLY_ENG_RELEASE" ]; then
+  if [ -n "$PTNFLY_ENG_RELEASE" ]; then
     BUILD_DIR=$TMP_DIR/patternfly-eng-release
     REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE
     VERIFY_DIR="$TMP_DIR/patternfly-eng-release-verify"
   fi
-  if [ -n "PTNFLY_ORG" ]; then
+  if [ -n "$PTNFLY_ORG" ]; then
     BUILD_DIR=$TMP_DIR/patternfly-org
     REPO_SLUG=$REPO_SLUG_PTNFLY_ORG
     VERIFY_DIR="$TMP_DIR/patternfly-org-verify"
   fi
-  if [ -n "PTNFLY" ]; then
+  if [ -n "$PTNFLY" ]; then
     BUILD_DIR=$TMP_DIR/patternfly
     REPO_SLUG=$REPO_SLUG_PTNFLY
     VERIFY_DIR="$TMP_DIR/patternfly-verify"
   fi
-  if [ -n "RCUE" ]; then
+  if [ -n "$RCUE" ]; then
     BUILD_DIR=$TMP_DIR/rcue
     REPO_SLUG=$REPO_SLUG_RCUE
     VERIFY_DIR="$TMP_DIR/rcue-verify"
   fi
-  if [ -n "PTNFLY_WC" ]; then
+  if [ -n "$PTNFLY_WC" ]; then
     BUILD_DIR=$TMP_DIR/patternfly-webcomponents
     REPO_SLUG=$REPO_SLUG_PTNFLY_WC
     VERIFY_DIR="$TMP_DIR/patternfly-webcomponents-verify"
   fi
-  if [ -n "PTNFLY_NG" ]; then
+  if [ -n "$PTNFLY_NG" ]; then
     BUILD_DIR=$TMP_DIR/patternfly-ng
     REPO_SLUG=$REPO_SLUG_PTNFLY_NG
     VERIFY_DIR="$TMP_DIR/patternfly-ng"
