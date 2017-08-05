@@ -1,10 +1,12 @@
 {
   "name": "patternfly-eng-release",
-  "version": "3.26.2",
+  "version": "0.0.0-semantically-released",
   "author": "Red Hat",
   "license": "Apache-2.0",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "semantic-release": "^6.3.6"
+  },
   "description": "A set of release engineering scripts for PatternFly, Angular PatternFly, PatternFly Org, and RCUE.",
   "repository": {
     "type": "git",
@@ -13,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/patternfly/patternfly-eng-release/issues"
   },
-  "homepage": "https://github.com/patternfly/patternfly-eng-release"
+  "homepage": "https://github.com/patternfly/patternfly-eng-release",
+  "release": {
+    "branch": "master",
+    "debug": false
+  },
+  "scripts": {
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  }
 }
