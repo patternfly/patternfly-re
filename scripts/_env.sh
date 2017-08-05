@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # Build PatternFly templates using Jekyll
 export PF_PAGE_BUILDER=jekyll

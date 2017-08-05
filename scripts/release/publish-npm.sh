@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 default()
 {
@@ -27,8 +27,14 @@ publish_npm()
   echo "*** Publishing npm"
   cd $BUILD_DIR
 
+  NPM_FILE=".npmrc"
+  if [ -n "$NPM_TOKEN" -a ! -f "$NPM_FILE" ]; then
+    echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > $NPM_FILE
+  fi
+
   # Log into npm if not already logged in
-  if [[ $(npm whoami 2> /dev/null) != 'patternfly-build' && -n "$NPM_USER" && -n "$NPM_PWD" ]]; then
+  WHOAMI=`npm whoami`
+  if [ "$WHOAMI" != "patternfly-build" -a -n "$NPM_USER" -a -n "$NPM_PWD" ]; then
     printf "$NPM_USER\n$NPM_PWD\n$NPM_USER@redhat.com" | npm login
     check $? "npm login failure"
   fi
