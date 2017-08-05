@@ -9,15 +9,21 @@ default()
   . $SCRIPT_DIR/_env.sh
   . $SCRIPT_DIR/_common.sh
 
+  BRANCH=$RELEASE_BRANCH
+  BRANCH_DIST=$RELEASE_DIST_BRANCH
   BUILD_DIR=$TRAVIS_BUILD_DIR
 }
 
-# Push generated files to dist branch
+# Push generated files to dist branch for tagging release.
 #
+# $1: Remote branch
+# $2: Local branch
 push_dist()
 {
-  echo "*** Pushing to $TRAVIS_BRANCH-dist"
+  echo "*** Pushing to dist branch: $1"
   cd $BUILD_DIR
+
+  git checkout $TRAVIS_BRANCH-local
 
   # Commit generated files
   git add dist --force
@@ -28,18 +34,44 @@ push_dist()
   check $? "git commit failure"
 
   # Push to dist branch
-  EXISTING=`git ls-remote --heads https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_BRANCH-dist`
+  EXISTING=`git ls-remote --heads https://github.com/$TRAVIS_REPO_SLUG.git $1`
 
   if [ -n "$EXISTING" ]; then
-    git fetch upstream $TRAVIS_BRANCH-dist:$TRAVIS_BRANCH-dist # <remote-branch>:<local-branch>
-    git checkout $TRAVIS_BRANCH-dist
+    git fetch upstream $1:$2 # <remote-branch>:<local-branch>
+    git checkout $2
     git merge -Xtheirs $TRAVIS_BRANCH-local --no-edit --ff
     check $? "git merge failure"
 
-    git push upstream $TRAVIS_BRANCH-dist -v
+    git push upstream $2 -v
   else
-    git push upstream $TRAVIS_BRANCH-local:$TRAVIS_BRANCH-dist -v # <local-branch>:<remote-branch>
+    git push upstream $TRAVIS_BRANCH-local:$2 -v # <local-branch>:<remote-branch>
   fi
+  check $? "git push failure"
+}
+
+# Push shrinkwrap to master branch
+#
+# $1: Remote branch
+# $2: Local branch
+push_master()
+{
+  echo "*** Pushing to master branch: $1"
+  cd $BUILD_DIR
+
+  if [ -s $SHRINKWRAP_JSON ]; then
+    git add $SHRINKWRAP_JSON --force
+  else
+    return
+  fi
+
+  # Merge master branch
+  git fetch upstream $1:$2 # <remote-branch>:<local-branch>
+  git checkout $2
+  git merge -Xtheirs $TRAVIS_BRANCH-local --no-edit --ff
+  check $? "git merge failure"
+
+  # Push to master
+  git push upstream $2:$1 -v # <local-branch>:<remote-branch>
   check $? "git push failure"
 }
 
@@ -69,7 +101,7 @@ cat <<- EEOOFF
 
     Note: Intended for use with Travis only.
 
-    AUTH_TOKEN, NPM_USER, and NPM_PWD must be set via Travis CI.
+    AUTH_TOKEN must be set via Travis CI.
 
     sh [-x] $SCRIPT [-h]
 
@@ -94,5 +126,6 @@ EEOOFF
 
   prereqs
   git_setup
-  push_dist
+  push_master $BRANCH $BRANCH
+  push_dist $BRANCH_DIST $BRANCH_DIST
 }

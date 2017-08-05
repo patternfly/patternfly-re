@@ -40,6 +40,8 @@ cat <<- EEOOFF
 
     Note: Intended for use with Travis only.
 
+    AUTH_TOKEN, NPM_USER, and NPM_PWD must be set via Travis CI.
+
     sh [-x] $SCRIPT [-h] -a|e|o|p|r|w|x
 
     Example: sh $SCRIPT -p
@@ -100,9 +102,21 @@ EEOOFF
   else
     build_install
     build
+
+    # Skip for pull requests and tags
+    if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
+      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
+        sh -x $SCRIPT_DIR/_shrinkwrap.sh
+        check $? "Shrinkwrap failure"
+        
+        sh -x $SCRIPT_DIR/_verify.sh
+        check $? "Verify install failure"
+      fi
+    fi
+
     build_test
 
-    # Skip publish for pull requests and tags
+    # Skip for pull requests and tags
     if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
       if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
         sh -x $SCRIPT_DIR/_publish-branch.sh
