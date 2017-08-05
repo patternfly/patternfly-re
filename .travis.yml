@@ -6,6 +6,6 @@ before_install:
   - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
   - if [[ -n ${NPM_TOKEN} ]]; then echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc; fi
 script:
-  - ./scripts/_build.sh -e
+  - sh -x ./scripts/_build.sh -e
 
 after_success:

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 default()
 {
@@ -39,6 +39,8 @@ cat <<- EEOOFF
     This script will build, publish, and release the repo.
 
     Note: Intended for use with Travis only.
+
+    AUTH_TOKEN, NPM_USER, and NPM_PWD must be set via Travis CI.
 
     sh [-x] $SCRIPT [-h] -a|e|o|p|r|w|x
 
@@ -92,20 +94,33 @@ EEOOFF
 
   # Release must remove shrinkwrap prior to install; thus, the Travis install is turned off
   if [ -n "$RELEASE" ]; then
-    $SCRIPT_DIR/release/_build.sh -$SWITCH
+    sh -x $SCRIPT_DIR/release/_build.sh -$SWITCH
     check $? "Release failure"
   elif [ -n "$RELEASE_NEXT" ]; then
-    $SCRIPT_DIR/release/_build-next.sh -$SWITCH
+    sh -x $SCRIPT_DIR/release/_build-next.sh -$SWITCH
     check $? "Release failure"
   else
     build_install
     build
-    build_test
 
-    # Skip publish for pull requests and tags
+    # Skip for pull requests and tags
     if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
       if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
-        $SCRIPT_DIR/_publish-branch.sh
+        sh -x $SCRIPT_DIR/_shrinkwrap.sh
+        check $? "Shrinkwrap failure"
+      fi
+      if [ -z "$PTNFLY_ORG" ]; then
+        sh -x $SCRIPT_DIR/_verify.sh
+        check $? "Verify package failure"
+      fi
+    fi
+
+    build_test
+
+    # Skip for pull requests and tags
+    if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
+      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
+        sh -x $SCRIPT_DIR/_publish-branch.sh
         check $? "Publish failure"
       fi
     fi
