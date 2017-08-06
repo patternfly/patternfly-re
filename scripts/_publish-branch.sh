@@ -9,21 +9,15 @@ default()
   . $SCRIPT_DIR/_env.sh
   . $SCRIPT_DIR/_common.sh
 
-  BRANCH=$RELEASE_BRANCH
-  BRANCH_DIST=$RELEASE_DIST_BRANCH
   BUILD_DIR=$TRAVIS_BUILD_DIR
 }
 
-# Push generated files to dist branch for tagging release.
+# Push generated files to dist branch
 #
-# $1: Remote branch
-# $2: Local branch
 push_dist()
 {
-  echo "*** Pushing to dist branch: $1"
+  echo "*** Pushing to $TRAVIS_BRANCH-dist"
   cd $BUILD_DIR
-
-  git checkout $TRAVIS_BRANCH-local
 
   # Commit generated files
   git add dist --force
@@ -37,17 +31,17 @@ push_dist()
   check $? "git commit failure"
 
   # Push to dist branch
-  EXISTING=`git ls-remote --heads https://github.com/$TRAVIS_REPO_SLUG.git $1`
+  EXISTING=`git ls-remote --heads https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_BRANCH-dist`
 
   if [ -n "$EXISTING" ]; then
-    git fetch upstream $1:$2 # <remote-branch>:<local-branch>
-    git checkout $2
+    git fetch upstream $TRAVIS_BRANCH-dist:$TRAVIS_BRANCH-dist # <remote-branch>:<local-branch>
+    git checkout $TRAVIS_BRANCH-dist
     git merge -Xtheirs $TRAVIS_BRANCH-local --no-edit --ff
     check $? "git merge failure"
 
-    git push upstream $2 -v
+    git push upstream $TRAVIS_BRANCH-dist -v
   else
-    git push upstream $TRAVIS_BRANCH-local:$2 -v # <local-branch>:<remote-branch>
+    git push upstream $TRAVIS_BRANCH-local:$TRAVIS_BRANCH-dist -v # <local-branch>:<remote-branch>
   fi
   check $? "git push failure"
 }
@@ -103,5 +97,5 @@ EEOOFF
 
   prereqs
   git_setup
-  push_dist $BRANCH_DIST $BRANCH_DIST
+  push_dist
 }
