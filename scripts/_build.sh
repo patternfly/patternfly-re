@@ -105,7 +105,7 @@ EEOOFF
 
     # Skip for pull requests and tags
     if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
-      if [ -n "$PTNFLY" ]; then
+      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
         sh -x $SCRIPT_DIR/_shrinkwrap.sh
         check $? "Shrinkwrap failure"
       fi
