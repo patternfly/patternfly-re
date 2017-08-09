@@ -18,7 +18,10 @@
   "homepage": "https://github.com/patternfly/patternfly-eng-release",
   "release": {
     "branch": "master",
-    "debug": false
+    "debug": false,
+    "verifyConditions": {
+      "path": "./node_modules/semantic-release/src/lib/plugin-noop.js"
+    }
   },
   "scripts": {
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
