@@ -91,11 +91,11 @@ bump_package()
     #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
 
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
+    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_NG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
+    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ORG" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
@@ -142,11 +142,9 @@ bump_js()
   cd $BUILD_DIR
 
   if [ -n "$PTNFLY" ]; then
-    sed "s|version:.*|version: \"$VERSION\",|" $PTNFLY_SETTINGS_JS > $PTNFLY_SETTINGS_JS.tmp
-  fi
-  check $? "Version bump failure"
+    sed 's|version:.*|version: \"$VERSION\",|' $PTNFLY_SETTINGS_JS > $PTNFLY_SETTINGS_JS.tmp
+    check $? "Version bump failure"
 
-  if [ -s "$PTNFLY_SETTINGS_JS.tmp" ]; then
     mv $PTNFLY_SETTINGS_JS.tmp $PTNFLY_SETTINGS_JS
     check $? "File move failure"
   fi
@@ -168,6 +166,9 @@ clean_cache()
 #
 clean_shrinkwrap()
 {
+  echo "*** Cleaning $SHRINKWRAP_JSON"
+  cd $BUILD_DIR
+
   if [ -s $SHRINKWRAP_JSON ]; then
     rm -f $SHRINKWRAP_JSON
   fi
@@ -375,7 +376,7 @@ verify()
   fi
 
   build_test
-  commit # Commit changes prior to bower verify step
+  commit # Changes must be committed prior to bower verify step
   verify $VERIFY_DIR $BUILD_DIR
 
   # Push changes to remote branch
