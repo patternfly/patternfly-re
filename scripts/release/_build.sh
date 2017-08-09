@@ -186,7 +186,7 @@ EEOOFF
     check $? "npm publish failure"
   fi
 
-  # Webjar publish
+  # Publish webjar
   if [ -z "$SKIP_WEBJAR_PUBLISH" ]; then
     if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
       sh -x $SCRIPT_DIR/publish-webjar.sh -v $VERSION -$SWITCH

@@ -17,6 +17,7 @@ default()
 prereqs()
 {
   echo "This build is running against $TRAVIS_REPO_SLUG"
+  cd $BUILD_DIR
 
   if [ -n "$TRAVIS_TAG" ]; then
     echo "This build is running against $TRAVIS_TAG"
@@ -29,6 +30,45 @@ prereqs()
       $BUMP_TAG_PREFIX* ) RELEASE=1;;
       *) echo "$TRAVIS_TAG is not a recognized format. Do not release!";;
     esac
+  elif [ -n "$SYMANTIC_RELEASE" ]; then
+    # Skip for pull requests and tags
+    if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" -a -n "$GH_TOKEN" -a -n "$NPM_TOKEN" ]; then
+      npm install semantic-release
+      ./node_modules/.bin/semantic-release pre
+    fi
+
+    # Get generated version from package.json
+    VERSION=`grep version package.json | \
+           awk -F':' '{print $2}' | \
+           sed 's|"||g' | \
+           sed 's|,||g' |
+           sed 's| *||g'`
+  fi
+}
+
+# Publish branch
+#
+publish_branch()
+{
+  # Skip for pull requests and tags
+  if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
+    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
+      sh -x $SCRIPT_DIR/_publish-branch.sh
+      check $? "Publish failure"
+    fi
+  fi
+}
+
+# Publish webjar
+#
+publish_webjar()
+{
+  # Skip for pull requests and tags
+  if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" -a -z "$SKIP_WEBJAR_PUBLISH" ]; then
+    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+      sh -x $SCRIPT_DIR/publish-webjar.sh -v $VERSION -$SWITCH
+      check $? "webjar publish failure"
+    fi
   fi
 }
 
@@ -72,18 +112,23 @@ EEOOFF
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
+         SYMANTIC_RELEASE=1;
          SWITCH=a;;
       e) PTNFLY_ENG_RELEASE=1;
+         SYMANTIC_RELEASE=1;
          SWITCH=e;;
       o) PTNFLY_ORG=1;
          SWITCH=o;;
       p) PTNFLY=1;
+         SYMANTIC_RELEASE=1;
          SWITCH=p;;
       r) RCUE=1;
          SWITCH=r;;
       w) PTNFLY_WC=1;
+         SYMANTIC_RELEASE=1;
          SWITCH=w;;
       x) PTNFLY_NG=1;
+         SYMANTIC_RELEASE=1;
          SWITCH=x;;
       \?) usage; exit 1;;
     esac
@@ -99,30 +144,14 @@ EEOOFF
   elif [ -n "$RELEASE_NEXT" ]; then
     sh -x $SCRIPT_DIR/release/_build-next.sh -$SWITCH
     check $? "Release failure"
+  elif [ -n "$SYMANTIC_RELEASE" ]; then
+    sh -x $SCRIPT_DIR/semantic-release/_release.sh -$SWITCH -v $VERSION
+    publish_branch
+    publish_webjar
   else
     build_install
     build
-
-    # Skip for pull requests and tags
-    if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
-      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
-        sh -x $SCRIPT_DIR/_shrinkwrap.sh
-        check $? "Shrinkwrap failure"
-      fi
-      if [ -z "$PTNFLY_ORG" ]; then
-        sh -x $SCRIPT_DIR/_verify.sh
-        check $? "Verify package failure"
-      fi
-    fi
-
     build_test
-
-    # Skip for pull requests and tags
-    if [ "$TRAVIS_PULL_REQUEST" = "false" -a -z "$TRAVIS_TAG" ]; then
-      if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_NG" -o -n "$PTNFLY_WC" ]; then
-        sh -x $SCRIPT_DIR/_publish-branch.sh
-        check $? "Publish failure"
-      fi
-    fi
+    push_dist
   fi
 }
