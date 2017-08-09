@@ -94,7 +94,7 @@ commit()
   cd $BUILD_DIR
 
   git add -u
-  git commit -m "Bumped version number to $VERSION"
+  git commit -m "Updating files modified by Travis build"
 }
 
 dist_copy()
