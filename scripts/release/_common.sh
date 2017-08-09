@@ -33,7 +33,8 @@ git_setup()
 #
 # $1: Repo slug
 # $2: Branch name
-setup_repo() {
+setup_repo()
+{
   DIR=$TMP_DIR/`basename $1`
   echo "*** Setting up local repo $DIR"
 
