@@ -55,7 +55,7 @@ REPO_OWNER_PTNFLY_WC=patternfly-webcomponents
 REPO_OWNER_RCUE=redhat-rcue
 
 # Set flag indicating scripts are running against a fork to prevent accidental merging, npm publish, etc.
-if [ -n "$TRAVIS" ]; then
+if [ -n "$TRAVIS" -a -n "$TRAVIS_REPO_SLUG" ]; then
   REPO_OWNER=`dirname $TRAVIS_REPO_SLUG`
   if ! [ "$REPO_OWNER" = "$REPO_OWNER_PTNFLY" -o \
          "$REPO_OWNER" = "$REPO_OWNER_PTNFLY_WC" -o \
