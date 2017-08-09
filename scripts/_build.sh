@@ -132,6 +132,6 @@ EEOOFF
     build_install
     build
     build_test
-    push_dist
+    publish_branch
   fi
 }
