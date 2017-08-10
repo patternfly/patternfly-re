@@ -57,14 +57,14 @@ cat <<- EEOOFF
 
     OPTIONS:
     h       Display this message (default)
-    a       Angular PatternFly
-    e       PatternFly Eng Release
+    a       Angular PatternFly (DISABLED for semantic release)
+    e       PatternFly Eng Release (DISABLED for semantic release)
     o       PatternFly Org
-    p       PatternFly
+    p       PatternFly (DISABLED for semantic release)
     r       RCUE
     v       The version number (e.g., 3.15.0)
-    w       PatternFly Web Components
-    x       Patternfly NG
+    w       PatternFly Web Components (DISABLED for semantic release)
+    x       Patternfly NG (DISABLED for semantic release)
 
     SPECIAL OPTIONS:
     s       Skip chained releases.
@@ -86,17 +86,17 @@ EEOOFF
   while getopts haefnoprsv:wx c; do
     case $c in
       h) usage; exit 0;;
-      a) PTNFLY_ANGULAR=1;;
-      e) PTNFLY_ENG_RELEASE=1;;
+      a) PTNFLY_ANGULAR=1; usage; exit1;; # DISABLED
+      e) PTNFLY_ENG_RELEASE=1; usage; exit1;; # DISABLED
       f) REPO_FORK=1;;
       n) RELEASE_NEXT=1;;
       o) PTNFLY_ORG=1;;
-      p) PTNFLY=1;;
+      p) PTNFLY=1; usage; exit1;; # DISABLED
       r) RCUE=1;;
       s) SKIP_CHAINED_RELEASE=1;;
       v) VERSION=$OPTARG;;
-      w) PTNFLY_WC=1;;
-      x) PTNFLY_NG=1;;
+      w) PTNFLY_WC=1; usage; exit1;; # DISABLED
+      x) PTNFLY_NG=1; usage; exit1;; # DISABLED
       \?) usage; exit 1;;
     esac
   done
