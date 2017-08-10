@@ -15,8 +15,10 @@ script:
   - sh -x ./scripts/_build.sh -e
 
 after_success:
-  - npm prune
-  - npm run semantic-release
+  - 'if [[ "$TRAVIS_SECURE_ENV_VARS" = "true" ]]; then
+       npm prune;
+       npm run semantic-release;
+     fi'
 
 branches:
   except:

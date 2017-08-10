@@ -14,52 +14,9 @@ default()
 
   . $SCRIPT_DIR/../_env.sh
   . $SCRIPT_DIR/../_common.sh
-  . $SCRIPT_DIR/../release/_common.sh
+  . $SCRIPT_DIR/_common.sh
 
-  BRANCH=$RELEASE_BRANCH
-  BRANCH_DIST=$RELEASE_DIST_BRANCH
   BUILD_DIR=$TRAVIS_BUILD_DIR
-  TMP_DIR="/tmp/patternfly-releases"
-}
-
-# Bump version number in bower.json
-#
-bump_bower()
-{
-  echo "*** Bumping version in $BOWER_JSON to $VERSION"
-  cd $BUILD_DIR
-
-  if [ ! -s "$BOWER_JSON" ]; then
-    return
-  fi
-
-  if [ -n "$PTNFLY" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
-  elif [ -n "$PTNFLY_ANGULAR" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
-  fi
-  check $? "Version bump failure"
-
-  if [ -s "$BOWER_JSON.tmp" ]; then
-    mv $BOWER_JSON.tmp $BOWER_JSON
-    check $? "File move failure"
-  fi
-}
-
-# Bump version number in JavaScript
-#
-bump_js()
-{
-  echo "*** Bumping version in $PTNFLY_SETTINGS_JS to $VERSION"
-  cd $BUILD_DIR
-
-  if [ -n "$PTNFLY" ]; then
-    sed 's|version:.*|version: \"$VERSION\",|' $PTNFLY_SETTINGS_JS > $PTNFLY_SETTINGS_JS.tmp
-    check $? "Version bump failure"
-
-    mv $PTNFLY_SETTINGS_JS.tmp $PTNFLY_SETTINGS_JS
-    check $? "File move failure"
-  fi
 }
 
 # Clean shrinkwrap
@@ -74,24 +31,24 @@ clean_shrinkwrap()
   fi
 }
 
-# Commit changes prior to bower verify step
+# Check prerequisites before continuing
 #
-commit()
+prereqs()
 {
-  echo "*** Committing changes"
-  cd $BUILD_DIR
-
-  git add -u
-  git commit -m "chore(release): update files modified by Travis build"
+  merge_prereqs
 }
 
-dist_copy()
+# Push changes
+#
+publish_branch()
 {
-  echo "*** Copying files to dist"
-  cd $BUILD_DIR
-
-  cp $PACKAGE_JSON $SHRINKWRAP_JSON dist
-  check $? "copy failure"
+  if [ -n "$PTNFLY_NG" ]; then
+    sh -x $SCRIPT_DIR/../_publish-branch.sh -d -o
+    check $? "Publish failure"
+  elif [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
+    sh -x $SCRIPT_DIR/../_publish-branch.sh -d
+    check $? "Publish failure"
+  fi
 }
 
 # Shrink wrap npm and run vulnerability test
@@ -117,54 +74,27 @@ usage()
 {
 cat <<- EEOOFF
 
-    This script will bump bower version number, shrinkwrap, test, and verify npm/bower installs
+    This script will bump the version number in PatternFly JS, shrinkwrap, test, and verify npm/bower installs
 
-    sh [-x] $SCRIPT [-h|b|f|n] -a|e|p|w|x -v <version>
+    sh [-x] $SCRIPT [-h] -a|e|p|w|x
 
-    Example: sh $SCRIPT -v 3.15.0 -p
+    Example: sh $SCRIPT -p
 
     OPTIONS:
     h       Display this message (default)
     a       Angular PatternFly
     e       PatternFly Eng Release
     p       PatternFly
-    v       The version number (e.g., 3.15.0)
     w       PatternFly Web Components
-    x       Patternfly NG
-
-    SPECIAL OPTIONS:
-    b       The branch to release (e.g., $NEXT_BRANCH)
-    f       Run against repo fork matching local username (e.g., `whoami`/patternfly)
-    n       Release PF 'next' branches (e.g., PF4 alpha, beta, etc.)
+    x       PatternFly NG
 
 EEOOFF
 }
 
-# Verify npm and bower installs prior to publish step
-#
-# $1: Verify directory
-# $2: Build directory
 verify()
 {
-  echo "*** Verifying install"
-
-  rm -rf $1
-  mkdir -p $1
-  cd $1
-
-  if [ -s "$2/$PACKAGE_JSON" ]; then
-    npm install $2
-    check $? "npm install failure"
-
-    if [ ! -d "$1"/node_modules ]; then
-      check 1 "npm install failure: node_modules directory expected"
-    fi
-  fi
-  if [ -s "$2/$BOWER_JSON" ]; then
-    cp $2/$BOWER_JSON .
-    bower install
-    check $? "bower install failure"
-  fi
+  sh -x $SCRIPT_DIR/_verify.sh $SWITCH
+  check $? "Verify failure"
 }
 
 # main()
@@ -176,66 +106,34 @@ verify()
     exit 1
   fi
 
-  while getopts hab:efnpv:wx c; do
+  while getopts haepwx c; do
     case $c in
       h) usage; exit 0;;
-      a) PTNFLY_ANGULAR=1;;
-      b) BRANCH=$OPTARG;;
-      e) PTNFLY_ENG_RELEASE=1;;
-      f) REPO_FORK=1;;
-      n) BRANCH_DIST=$NEXT_DIST_BRANCH;;
-      p) PTNFLY=1;;
-      v) VERSION=$OPTARG;;
-      w) PTNFLY_WC=1;;
-      x) PTNFLY_NG=1;;
+      a) PTNFLY_ANGULAR=1;
+         SWITCH=-a;;
+      e) PTNFLY_ENG_RELEASE=1;
+         SWITCH=-e;;
+      p) PTNFLY=1;
+         SWITCH=-p;;
+      w) PTNFLY_WC=1;
+         SWITCH=-w;;
+      x) PTNFLY_NG=1;
+         SWITCH=-x;;
       \?) usage; exit 1;;
     esac
   done
 
-  # Source env.sh afer setting REPO_FORK
-  if [ -n "$REPO_FORK" ]; then
-    default
-  fi
-
-  if [ -n "$PTNFLY_ANGULAR" ]; then
-    REPO_SLUG=$REPO_SLUG_PTNFLY_ANGULAR
-    VERIFY_DIR="$TMP_DIR/angular-patternfly-verify"
-  fi
-  if [ -n "$PTNFLY_ENG_RELEASE" ]; then
-    REPO_SLUG=$REPO_SLUG_PTNFLY_ENG_RELEASE
-    VERIFY_DIR="$TMP_DIR/patternfly-eng-release-verify"
-  fi
-  if [ -n "$PTNFLY" ]; then
-    REPO_SLUG=$REPO_SLUG_PTNFLY
-    VERIFY_DIR="$TMP_DIR/patternfly-verify"
-  fi
-  if [ -n "$PTNFLY_WC" ]; then
-    REPO_SLUG=$REPO_SLUG_PTNFLY_WC
-    VERIFY_DIR="$TMP_DIR/patternfly-webcomponents-verify"
-  fi
-  if [ -n "$PTNFLY_NG" ]; then
-    REPO_SLUG=$REPO_SLUG_PTNFLY_NG
-    VERIFY_DIR="$TMP_DIR/patternfly-ng"
-  fi
-
-  if [ -z "$VERSION" -o -z "$REPO_SLUG" ]; then
+  if [ -z "$SWITCH" ]; then
     usage
     exit 1
   fi
 
-  clean_shrinkwrap # Remove shrinkwrap prior to install
-  bump_bower
-  bump_js
+  prereqs
+  clean_shrinkwrap
   build_install
   build
   shrinkwrap
   build_test
-  commit # Changes must be committed prior to bower verify step
-
-  if [ -n "$PTNFLY_NG" ]; then
-    verify $VERIFY_DIR $BUILD_DIR/dist
-    dist_copy
-  else
-    verify $VERIFY_DIR $BUILD_DIR
-  fi
+  verify
+  publish_branch
 }

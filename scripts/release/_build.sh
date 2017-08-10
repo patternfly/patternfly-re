@@ -68,10 +68,10 @@ delete_bump_tag()
 #
 prereqs()
 {
-  echo "This build is running against $TRAVIS_REPO_SLUG"
+  echo "*** This build is running against $TRAVIS_REPO_SLUG"
 
   if [ -n "$TRAVIS_TAG" ]; then
-    echo "This build is running against $TRAVIS_TAG"
+    echo "*** This build is running against $TRAVIS_TAG"
 
     # Get version from tag
     case "$TRAVIS_TAG" in
@@ -88,7 +88,7 @@ prereqs()
 
   # Ensure release runs for main repo only
   if [ "$TRAVIS_REPO_SLUG" != "$REPO_SLUG" ]; then
-    check 1 echo "Release must be performed on $REPO_SLUG only!"
+    check 1 "Release must be performed on $REPO_SLUG only!"
   fi
 
   git tag | grep "^$RELEASE_TAG_PREFIX$VERSION$"

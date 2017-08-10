@@ -67,7 +67,7 @@ build_install()
     bower install
     checkval=$?
     if [ $checkval -ne 0 ]; then
-      echo "$BOWER_JSON contents:"
+      echo "*** $BOWER_JSON contents:"
       cat $BOWER_JSON
       check $checkval "bower install failure"
     fi
