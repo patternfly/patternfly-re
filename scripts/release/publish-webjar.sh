@@ -21,7 +21,7 @@ default()
 #
 # $1: Repo name
 # $2: Version
-publish_bower_webjar()
+publish_bower()
 {
   echo "*** Publishing bower to webjar"
 
@@ -36,7 +36,7 @@ publish_bower_webjar()
 #
 # $1: Repo name
 # $2: Version
-publish_npm_webjar()
+publish_npm()
 {
   echo "*** Publishing npm to webjar"
 
@@ -126,6 +126,6 @@ EEOOFF
     REPO_NAME=$OVERRIDE_REPO_NAME
   fi
 
-  publish_bower_webjar $REPO_NAME $VERSION
-  publish_npm_webjar $REPO_NAME $VERSION
+  publish_bower $REPO_NAME $VERSION
+  publish_npm $REPO_NAME $VERSION
 }
