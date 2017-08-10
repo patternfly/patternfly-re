@@ -139,11 +139,6 @@ verify()
     esac
   done
 
-  if [ -z "$SWITCH" ]; then
-    usage
-    exit 1
-  fi
-
   prereqs
   bump_bower
   bump_js
