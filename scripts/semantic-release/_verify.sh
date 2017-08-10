@@ -20,13 +20,6 @@ default()
   TMP_DIR="/tmp/patternfly-releases"
 }
 
-# Check prerequisites before continuing
-#
-prereqs()
-{
-  merge_prereqs
-}
-
 usage()
 {
 cat <<- EEOOFF
@@ -105,8 +98,6 @@ verify()
     usage
     exit 1
   fi
-
-  prereqs
 
   if [ -n "$PTNFLY_NG" ]; then
     verify $VERIFY_DIR $BUILD_DIR/dist
