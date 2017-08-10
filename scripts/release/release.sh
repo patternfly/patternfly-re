@@ -44,17 +44,21 @@ bump_bower()
   if [ -n "$PTNFLY" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
-    # Removed Patternfy bump from a-pf release
     #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" $BOWER_JSON > $BOWER_JSON.tmp
 
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_NG" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
+    #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
+    #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
+
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON > $BOWER_JSON.tmp
   elif [ -n "$PTNFLY_ORG" ]; then
+    #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
+    #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" | \
+    #sed "s|\"angular-patternfly\":.*|\"angular-patternfly\": \"$PKG_PTNFLY_ANGULAR\",|" > $BOWER_JSON.tmp
+
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" | \
-    sed "s|\"angular-patternfly\":.*|\"angular-patternfly\": \"$PKG_PTNFLY_ANGULAR\",|" > $BOWER_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" > $BOWER_JSON.tmp
   elif [ -n "$RCUE" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
@@ -84,25 +88,35 @@ bump_package()
   fi
 
   if [ -n "$PTNFLY" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
+    #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
+    #sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
+
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ANGULAR" ]; then
-    # Removed Patternfy bump from a-pf release
+    #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
+    #sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
+
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON > $PACKAGE_JSON.tmp
+  elif [ -n "$PTNFLY_NG" ]; then
+    #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
+    #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
+    #sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
+
+    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON > $PACKAGE_JSON.tmp
+  elif [ -n "$PTNFLY_ORG" ]; then
+    #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
+    #sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
 
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
-  elif [ -n "$PTNFLY_NG" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
-  elif [ -n "$PTNFLY_ORG" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" > $PACKAGE_JSON.tmp
   elif [ -n "$RCUE" ]; then
+    #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
+    #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
+    #sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
+
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
-    sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
+    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_WC" ]; then
@@ -232,14 +246,14 @@ cat <<- EEOOFF
 
     OPTIONS:
     h       Display this message (default)
-    a       Angular PatternFly
-    e       PatternFly Eng Release
+    a       Angular PatternFly (DISABLED for semantic release)
+    e       PatternFly Eng Release (DISABLED for semantic release)
     o       PatternFly Org
-    p       PatternFly
+    p       PatternFly (DISABLED for semantic release)
     r       RCUE
     v       The version number (e.g., 3.15.0)
-    w       PatternFly Web Components
-    x       Patternfly NG
+    w       PatternFly Web Components (DISABLED for semantic release)
+    x       Patternfly NG (DISABLED for semantic release)
 
     SPECIAL OPTIONS:
     b       The branch to release (e.g., $NEXT_BRANCH)
@@ -290,20 +304,20 @@ verify()
   while getopts hab:efgnoprsv:wx c; do
     case $c in
       h) usage; exit 0;;
-      a) PTNFLY_ANGULAR=1;;
+      a) PTNFLY_ANGULAR=1; usage; exit 1;; # DISABLED
       b) BRANCH=$OPTARG;;
-      e) PTNFLY_ENG_RELEASE=1;;
+      e) PTNFLY_ENG_RELEASE=1; usage; exit 1;; # DISABLED
       f) REPO_FORK=1;;
       g) PUSH=1;;
       n) BRANCH_DIST=$NEXT_DIST_BRANCH;;
       o) PTNFLY_ORG=1;;
-      p) PTNFLY=1;;
+      p) PTNFLY=1; usage; exit 1;; # DISABLED
       r) RCUE=1;;
       s) SKIP_SETUP=1;;
       v) VERSION=$OPTARG;
          BUMP_BRANCH=bump-v$VERSION;;
-      w) PTNFLY_WC=1;;
-      x) PTNFLY_NG=1;;
+      w) PTNFLY_WC=1; usage; exit 1;; # DISABLED
+      x) PTNFLY_NG=1; usage; exit 1;; # DISABLED
       \?) usage; exit 1;;
     esac
   done
