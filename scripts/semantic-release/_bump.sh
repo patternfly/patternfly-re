@@ -91,7 +91,7 @@ prereqs()
 #
 publish_branch()
 {
-  sh -x $SCRIPT_DIR/../_publish-branch.sh -u
+  sh -x $SCRIPT_DIR/_publish-branch.sh -u
   check $? "Publish failure"
 }
 

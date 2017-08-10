@@ -36,10 +36,10 @@ clean_shrinkwrap()
 publish_branch()
 {
   if [ -n "$PTNFLY_NG" ]; then
-    sh -x $SCRIPT_DIR/../_publish-branch.sh -d -o
+    sh -x $SCRIPT_DIR/_publish-branch.sh -d -o
     check $? "Publish failure"
   elif [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
-    sh -x $SCRIPT_DIR/../_publish-branch.sh -d
+    sh -x $SCRIPT_DIR/_publish-branch.sh -d
     check $? "Publish failure"
   fi
 }
