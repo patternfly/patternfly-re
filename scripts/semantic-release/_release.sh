@@ -31,13 +31,6 @@ clean_shrinkwrap()
   fi
 }
 
-# Check prerequisites before continuing
-#
-prereqs()
-{
-  merge_prereqs
-}
-
 # Push changes
 #
 publish_branch()
@@ -128,7 +121,6 @@ verify()
     exit 1
   fi
 
-  prereqs
   clean_shrinkwrap
   build_install
   build
