@@ -116,11 +116,6 @@ verify()
     esac
   done
 
-  if [ -z "$SWITCH" ]; then
-    usage
-    exit 1
-  fi
-
   clean_shrinkwrap
   build_install
   build

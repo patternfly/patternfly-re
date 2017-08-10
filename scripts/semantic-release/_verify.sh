@@ -94,11 +94,6 @@ verify()
     esac
   done
 
-  if [ -z "$VERIFY_DIR" ]; then
-    usage
-    exit 1
-  fi
-
   if [ -n "$PTNFLY_NG" ]; then
     verify $VERIFY_DIR $BUILD_DIR/dist
   else
