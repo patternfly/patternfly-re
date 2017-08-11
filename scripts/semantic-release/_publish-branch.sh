@@ -17,7 +17,6 @@ default()
     *-dist ) BRANCH_DIST=$TRAVIS_BRANCH;;
     *) BRANCH_DIST=$TRAVIS_BRANCH-dist;;
   esac
-  BRANCH_LOCAL=$BRANCH_DIST-local
 }
 
 # Commit changes
@@ -54,12 +53,12 @@ push_dist()
   if [ -n "$EXISTING" ]; then
     git fetch upstream $BRANCH_DIST:$BRANCH_DIST # <remote-branch>:<local-branch>
     git checkout $BRANCH_DIST
-    git merge -X theirs $BRANCH_LOCAL --no-edit --ff
+    git merge -X theirs $TRAVIS_BRANCH-local --no-edit --ff
     check $? "git merge failure"
 
     git push upstream $BRANCH_DIST -v
   else
-    git push upstream $BRANCH_LOCAL:$BRANCH_DIST -v # <local-branch>:<remote-branch>
+    git push upstream $TRAVIS_BRANCH-local:$BRANCH_DIST -v # <local-branch>:<remote-branch>
   fi
   check $? "git push failure"
 }
