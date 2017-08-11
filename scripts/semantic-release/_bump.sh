@@ -104,30 +104,15 @@ publish_branch()
   check $? "Publish failure"
 }
 
-# Restoring bower.json so npm publish is not run until next master-dist build
+# Set indicator to ensure 'npm publish' is not run until following master-dist build
 #
-restore_bower()
+skip_npm_publish()
 {
-  echo "*** Restoring $BOWER_JSON"
+  echo "*** Creating $SKIP_NPM_PUBLISH"
   cd $BUILD_DIR
 
-  if [ -s "$BOWER_JSON.tmp" ]; then
-    mv $BOWER_JSON.tmp $BOWER_JSON
-    check $? "File move failure"
-  fi
-}
-
-# Saving bower.json so it can be restored after pushing to master-dist
-#
-save_bower()
-{
-  echo "*** Saving $BOWER_JSON"
-  cd $BUILD_DIR
-
-  if [ -s "$BOWER_JSON" ]; then
-    cp $BOWER_JSON $BOWER_JSON.tmp
-    check $? "File copy failure"
-  fi
+  touch $SKIP_NPM_PUBLISH
+  check $? "Touch file failure"
 }
 
 usage()
@@ -178,10 +163,9 @@ verify()
   done
 
   prereqs
-  save_bower
   bump_bower
   bump_js
   verify
   publish_branch
-  restore_bower
+  skip_npm_publish
 }

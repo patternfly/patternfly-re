@@ -114,6 +114,7 @@ GULP_FILE_JS=gulpfile.js
 HOME_HTML=source/index.html
 JSDOC_CONF_JSON=jsdocConfig.json
 KARMA_CONF_JS=karma.conf.js
+SKIP_NPM_PUBLISH=skip-npm-publish.txt
 NSP=node_modules/nsp/bin/nsp
 PACKAGE_JSON=package.json
 PTNFLY_SETTINGS_JS=src/js/patternfly-settings-base.js

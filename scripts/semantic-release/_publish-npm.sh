@@ -53,6 +53,14 @@ prereqs()
 #
 publish_npm()
 {
+  echo "*** Publishing npm"
+  cd $BUILD_DIR
+
+  if [ -f "$SKIP_NPM_PUBLISH" ]; then
+    echo "*** Found $SKIP_NPM_PUBLISH file indicator. Do not publish!"
+    exit 1
+  fi
+
   npm publish
   check $? "npm publish failure"
 }
