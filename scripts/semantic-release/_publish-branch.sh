@@ -71,7 +71,8 @@ prereqs()
 
   # Avoid creating a <branch>-dist equivalent for all branches added to the main repository
   if [ -z "$REPO_FORK" ]; then
-    if [ ! "$TRAVIS_BRANCH" = "$RELEASE_BRANCH" -o "$TRAVIS_BRANCH" = "$NEXT_BRANCH" ]; then
+    if [ "$TRAVIS_BRANCH" != "$RELEASE_BRANCH" -a "$TRAVIS_BRANCH" != "$RELEASE_DIST_BRANCH" \
+        -a "$TRAVIS_BRANCH" != "$NEXT_BRANCH" -a "$TRAVIS_BRANCH" != "$NEXT_DIST_BRANCH" ]; then
       echo "*** Building against $TRAVIS_BRANCH and not the master or master-dist. Do not publish!"
       exit 0
     fi
