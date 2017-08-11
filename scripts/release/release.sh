@@ -228,8 +228,10 @@ shrinkwrap()
   npm shrinkwrap
   check $? "npm shrinkwrap failure"
 
-  # Restore all packages for testing with karma, nsp, etc.
-  npm install
+  if [ -s "$NSP" -a -s "$SHRINKWRAP_JSON" ]; then
+    node $NSP --shrinkwrap npm-shrinkwrap.json check --output summary
+    check $? "shrinkwrap vulnerability found" warn
+  fi
 }
 
 usage()
@@ -384,12 +386,12 @@ verify()
   bump_js
   build_install
   build
+  build_test
 
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" -o -n "$PTNFLY_WC" ]; then
     shrinkwrap
   fi
 
-  build_test
   commit # Changes must be committed prior to bower verify step
   verify $VERIFY_DIR $BUILD_DIR
 
