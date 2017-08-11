@@ -156,7 +156,7 @@ bump_js()
   cd $BUILD_DIR
 
   if [ -n "$PTNFLY" ]; then
-    sed 's|version:.*|version: \"$VERSION\",|' $PTNFLY_SETTINGS_JS > $PTNFLY_SETTINGS_JS.tmp
+    sed "s|version:.*|version: \"$VERSION\",|" $PTNFLY_SETTINGS_JS > $PTNFLY_SETTINGS_JS.tmp
     check $? "Version bump failure"
 
     mv $PTNFLY_SETTINGS_JS.tmp $PTNFLY_SETTINGS_JS
