@@ -234,7 +234,7 @@ shrinkwrap()
 
   # Restore dependencies
   npm install
-  
+
   if [ -s "$NSP" -a -s "$SHRINKWRAP_JSON" ]; then
     node $NSP --shrinkwrap npm-shrinkwrap.json check --output summary
     check $? "shrinkwrap vulnerability found" warn
