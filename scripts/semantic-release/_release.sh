@@ -56,17 +56,22 @@ shrinkwrap()
   echo "*** Shrink wrapping $SHRINKWRAP_JSON"
   cd $BUILD_DIR
 
-  if [ -z "$PTNFLY_ENG_RELEASE" ]; then
-    # Only include production dependencies with shrinkwrap
-    npm prune --production
+  if [ -n "$PTNFLY_ENG_RELEASE" ]; then
+    return
+  fi
 
-    npm shrinkwrap
-    check $? "npm shrinkwrap failure"
+  # Only include production dependencies with shrinkwrap
+  npm prune --production
 
-    if [ -s "$NSP" -a -s "$SHRINKWRAP_JSON" ]; then
-      node $NSP --shrinkwrap npm-shrinkwrap.json check --output summary
-      check $? "shrinkwrap vulnerability found" warn
-    fi
+  npm shrinkwrap
+  check $? "npm shrinkwrap failure"
+
+  # Restore dependencies
+  npm install
+
+  if [ -s "$NSP" -a -s "$SHRINKWRAP_JSON" ]; then
+    node $NSP --shrinkwrap npm-shrinkwrap.json check --output summary
+    check $? "shrinkwrap vulnerability found" warn
   fi
 }
 
