@@ -63,8 +63,10 @@ shrinkwrap()
     npm shrinkwrap
     check $? "npm shrinkwrap failure"
 
-    # Restore all packages for testing with karma, nsp, etc.
-    npm install
+    if [ -s "$NSP" -a -s "$SHRINKWRAP_JSON" ]; then
+      node $NSP --shrinkwrap npm-shrinkwrap.json check --output summary
+      check $? "shrinkwrap vulnerability found" warn
+    fi
   fi
 }
 
@@ -124,8 +126,8 @@ verify()
   clean_shrinkwrap
   build_install
   build
-  shrinkwrap
   build_test
+  shrinkwrap
   verify
   publish_branch
 }
