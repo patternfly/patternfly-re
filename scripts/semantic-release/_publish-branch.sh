@@ -11,6 +11,13 @@ default()
   . $SCRIPT_DIR/_common.sh
 
   BUILD_DIR=$TRAVIS_BUILD_DIR
+
+  # Ensure we don't push to <branch>-dist-dist...
+  case "$TRAVIS_BRANCH" in
+    *-dist ) BRANCH_DIST=$TRAVIS_BRANCH;;
+    *) BRANCH_DIST=$TRAVIS_BRANCH-dist;;
+  esac
+  BRANCH_LOCAL=$BRANCH_DIST-local
 }
 
 # Commit changes
@@ -38,21 +45,21 @@ commit()
 #
 push_dist()
 {
-  echo "*** Pushing to $TRAVIS_BRANCH-dist"
+  echo "*** Pushing to $BRANCH_DIST"
   cd $BUILD_DIR
 
   # Push to dist branch
-  EXISTING=`git ls-remote --heads https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_BRANCH-dist`
+  EXISTING=`git ls-remote --heads https://github.com/$TRAVIS_REPO_SLUG.git $BRANCH_DIST`
 
   if [ -n "$EXISTING" ]; then
-    git fetch upstream $TRAVIS_BRANCH-dist:$TRAVIS_BRANCH-dist # <remote-branch>:<local-branch>
-    git checkout $TRAVIS_BRANCH-dist
-    git merge -X theirs $TRAVIS_BRANCH-local --no-edit --ff
+    git fetch upstream $BRANCH_DIST:$BRANCH_DIST # <remote-branch>:<local-branch>
+    git checkout $BRANCH_DIST
+    git merge -X theirs $BRANCH_LOCAL --no-edit --ff
     check $? "git merge failure"
 
-    git push upstream $TRAVIS_BRANCH-dist -v
+    git push upstream $BRANCH_DIST -v
   else
-    git push upstream $TRAVIS_BRANCH-local:$TRAVIS_BRANCH-dist -v # <local-branch>:<remote-branch>
+    git push upstream $BRANCH_LOCAL:$BRANCH_DIST -v # <local-branch>:<remote-branch>
   fi
   check $? "git push failure"
 }

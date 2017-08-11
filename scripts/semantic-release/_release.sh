@@ -35,6 +35,11 @@ clean_shrinkwrap()
 #
 publish_branch()
 {
+  # Ensure we don't push to <branch>-dist-dist...
+  case "$TRAVIS_BRANCH" in
+    *-dist ) return;;
+  esac
+
   if [ -n "$PTNFLY_NG" ]; then
     sh -x $SCRIPT_DIR/_publish-branch.sh -c -d -o
     check $? "Publish failure"
