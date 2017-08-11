@@ -45,7 +45,7 @@ push_dist()
   if [ -n "$EXISTING" ]; then
     git fetch upstream $1:$2 # <remote-branch>:<local-branch>
     git checkout $2
-    git merge -Xtheirs $TRAVIS_BRANCH-local --no-edit --ff
+    git merge -X theirs $TRAVIS_BRANCH-local --no-edit --ff
     check $? "git merge failure"
 
     git push upstream $2 -v
@@ -69,7 +69,7 @@ push_master()
   # Merge master branch
   git fetch upstream $1:$2 # <remote-branch>:<local-branch>
   git checkout $2
-  git merge -Xtheirs $TRAVIS_BRANCH-local --no-edit --ff
+  git merge -X theirs $TRAVIS_BRANCH-local --no-edit --ff
   check $? "git merge failure"
 
   # Push to master
