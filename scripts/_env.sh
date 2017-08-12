@@ -107,7 +107,10 @@ REPO_URL_PTNFLY_NG="github.com/$REPO_SLUG_PTNFLY_NG.git"
 
 # Common files
 BOWER_JSON=bower.json
+DIST_DEMO_DIR=dist-demo
+DIST_DIR=dist
 GEM_FILE=Gemfile
+GIT_DIR=.git
 GRUNT_FILE_JS=Gruntfile.js
 GRUNT_NGDOCS_TMPL=grunt-ngdocs-index.tmpl
 GULP_FILE_JS=gulpfile.js
