@@ -49,14 +49,15 @@ prereqs()
   fi
 }
 
-# Publish to npm
+# Publish npm
 #
+# $1 subdirectory to publish from
 publish_npm()
 {
   echo "*** Publishing npm"
-  cd $BUILD_DIR
+  cd $BUILD_DIR/$1
 
-  if [ -f "$SKIP_NPM_PUBLISH" ]; then
+  if [ -f "$BUILD_DIR/$SKIP_NPM_PUBLISH" ]; then
     echo "*** Found $SKIP_NPM_PUBLISH file indicator. Do not publish!"
     exit 1
   fi
@@ -65,18 +66,46 @@ publish_npm()
   check $? "npm publish failure"
 }
 
+
+# Publish npm from dist directory
+#
+publish_npm_dist() {
+  echo "*** Copying files to dist"
+  cd $BUILD_DIR/$DIST_DIR
+
+  cp -r $BUILD_DIR/$GIT_DIR $DIST_DIR
+  check $? "Copy $GIT_DIR failure"
+
+  cp $BUILD_DIR/$PACKAGE_JSON $DIST_DIR
+  check $? "Copy $PACKAGE_JSON failure"
+
+  cp $BUILD_DIR/$SHRINKWRAP_JSON $DIST_DIR
+  check $? "Copy $SHRINKWRAP_JSON failure"
+
+  node $BUILD_DIR/node_modules/semantic-release/bin/semantic-release.js pre
+  check $? "semantic-release pre failure"
+
+  publish_npm $DIST_DIR
+
+  node $BUILD_DIR/node_modules/semantic-release/bin/semantic-release.js post
+  check $? "semantic-release post failure"
+}
+
 usage()
 {
 cat <<- EEOOFF
 
     This script ensures both $PACKAGE_JSON and $BOWER_JSON have been updated prior to publishing to npm
 
-    sh [-x] $SCRIPT [-h]
+    Note: The sematic-release command is run only when publishing from the $DIST subdirectory.
 
-    Example: sh $SCRIPT
+    sh [-x] $SCRIPT [-h|d]
+
+    Example: sh $SCRIPT -d
 
     OPTIONS:
     h       Display this message (default)
+    d       Publish from $DIST directory
 
 EEOOFF
 }
@@ -85,13 +114,19 @@ EEOOFF
 {
   default
 
-  while getopts hap c; do
+  while getopts hd c; do
     case $c in
       h) usage; exit 0;;
+      d) PUBLISH_DIST=1;;
       \?) usage; exit 1;;
     esac
   done
 
   prereqs
-  publish_npm
+
+  if [ -n "$PUBLISH_DIST" ]; then
+    publish_npm_dist
+  else
+    publish_npm
+  fi
 }

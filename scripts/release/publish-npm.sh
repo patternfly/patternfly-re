@@ -20,7 +20,7 @@ default()
   TMP_DIR="/tmp/patternfly-releases"
 }
 
-# Publish to npm
+# Publish npm
 #
 publish_npm()
 {

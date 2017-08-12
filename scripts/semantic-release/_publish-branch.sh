@@ -27,10 +27,10 @@ commit()
   cd $BUILD_DIR
 
   if [ -n "$COMMIT_DIST" -a -d "dist" ]; then
-    git add dist --force
+    git add $DIST_DIR --force
   fi
   if [ -n "$COMMIT_DIST_DEMO" -a -d "dist-demo" ]; then
-    git add dist-demo --force
+    git add $DIST_DEMO_DIR --force
   fi
   if [ -n "$COMMIT_CHANGES" ]; then
     git add -A
