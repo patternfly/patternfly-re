@@ -81,13 +81,10 @@ publish_npm_dist() {
   cp $BUILD_DIR/$SHRINKWRAP_JSON $DIST_DIR
   check $? "Copy $SHRINKWRAP_JSON failure"
 
-  node $BUILD_DIR/node_modules/semantic-release/bin/semantic-release.js pre
-  check $? "semantic-release pre failure"
-
+  cp $BUILD_DIR/$NPM_IGNORE $DIST_DIR
+  check $? "Copy $NPM_IGNORE failure"
+  
   publish_npm $DIST_DIR
-
-  node $BUILD_DIR/node_modules/semantic-release/bin/semantic-release.js post
-  check $? "semantic-release post failure"
 }
 
 usage()
@@ -97,8 +94,8 @@ cat <<- EEOOFF
     This script runs 'npm publish' from the root or $DIST_DIR directory. If $BOWER_JSON exists, the version in
     $PACKAGE_JSON must match or the script exists with an error.
 
-    If publishing the $DIST_DIR directory, this script will copy $PACKAGE_JSON, $SHRINKWRAP_JSON, and the $GIT_DIR
-    directory to $DIST_DIR. The 'sematic-release' and 'npm publish' commands are also run from the $DIST_DIR directory.
+    If publishing the $DIST_DIR directory, this script will copy $PACKAGE_JSON, $SHRINKWRAP_JSON, NPM_IGNORE, and
+    the $GIT_DIR directory to $DIST_DIR.
 
     Note:
 
