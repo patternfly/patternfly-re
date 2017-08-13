@@ -50,18 +50,18 @@ prereqs()
 
 # Publish npm
 #
-# $1 subdirectory to publish from
+# $1 directory to publish
 publish_npm()
 {
   echo "*** Publishing npm"
-  cd $BUILD_DIR/$1
+  cd $BUILD_DIR
 
-  if [ -f "$BUILD_DIR/$SKIP_NPM_PUBLISH" ]; then
+  if [ -f "$SKIP_NPM_PUBLISH" ]; then
     echo "*** Found $SKIP_NPM_PUBLISH file indicator. Do not publish!"
     exit 1
   fi
 
-  npm publish
+  npm publish $1
   check $? "npm publish failure"
 }
 
@@ -70,19 +70,16 @@ publish_npm()
 #
 publish_npm_dist() {
   echo "*** Copying files to dist"
-  cd $BUILD_DIR/$DIST_DIR
+  cd $BUILD_DIR
 
-  cp -r $BUILD_DIR/$GIT_DIR $DIST_DIR
+  cp -r $GIT_DIR $DIST_DIR
   check $? "Copy $GIT_DIR failure"
 
-  cp $BUILD_DIR/$PACKAGE_JSON $DIST_DIR
+  cp $PACKAGE_JSON $DIST_DIR
   check $? "Copy $PACKAGE_JSON failure"
 
-  cp $BUILD_DIR/$SHRINKWRAP_JSON $DIST_DIR
+  cp $SHRINKWRAP_JSON $DIST_DIR
   check $? "Copy $SHRINKWRAP_JSON failure"
-
-  cp $BUILD_DIR/$NPM_IGNORE $DIST_DIR
-  check $? "Copy $NPM_IGNORE failure"
   
   publish_npm $DIST_DIR
 }
@@ -94,8 +91,8 @@ cat <<- EEOOFF
     This script runs 'npm publish' from the root or $DIST_DIR directory. If $BOWER_JSON exists, the version in
     $PACKAGE_JSON must match or the script exists with an error.
 
-    If publishing the $DIST_DIR directory, this script will copy $PACKAGE_JSON, $SHRINKWRAP_JSON, NPM_IGNORE, and
-    the $GIT_DIR directory to $DIST_DIR.
+    In addition to running 'npm publish', the -d switch will copy $PACKAGE_JSON, $SHRINKWRAP_JSON, and the $GIT_DIR
+    directory to $DIST_DIR.
 
     Note:
 
@@ -105,7 +102,7 @@ cat <<- EEOOFF
 
     OPTIONS:
     h       Display this message (default)
-    d       Publish from $DIST directory
+    d       Publish $DIST directory
 
 EEOOFF
 }
