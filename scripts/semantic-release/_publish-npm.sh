@@ -48,9 +48,25 @@ prereqs()
   fi
 }
 
+# Publish dist
+#
+publish_dist() {
+  echo "*** Copying $DIST_DIR to root"
+  cd $BUILD_DIR
+
+  for FILE in `ls -1 $DIST_DIR`
+  do
+    rm -rf $FILE
+    check $? "Remove $FILE failure"
+  done
+
+  cd $DIST_DIR
+  find . | cpio -dumpv ..
+  check $? "Move files failure"
+}
+
 # Publish npm
 #
-# $1 directory to publish
 publish_npm()
 {
   echo "*** Publishing npm"
@@ -61,38 +77,23 @@ publish_npm()
     exit 1
   fi
 
-  npm publish $1
+  npm publish
   check $? "npm publish failure"
-}
-
-
-# Publish npm from dist directory
-#
-publish_npm_dist() {
-  echo "*** Copying files to dist"
-  cd $BUILD_DIR
-
-  cp -r $GIT_DIR $DIST_DIR
-  check $? "Copy $GIT_DIR failure"
-
-  cp $PACKAGE_JSON $DIST_DIR
-  check $? "Copy $PACKAGE_JSON failure"
-
-  cp $SHRINKWRAP_JSON $DIST_DIR
-  check $? "Copy $SHRINKWRAP_JSON failure"
-  
-  publish_npm $DIST_DIR
 }
 
 usage()
 {
 cat <<- EEOOFF
 
-    This script runs 'npm publish' from the root or $DIST_DIR directory. If $BOWER_JSON exists, the version in
-    $PACKAGE_JSON must match or the script exists with an error.
+    This script runs 'npm publish', but also ensures $PACKAGE_JSON and $BOWER_JSON contain matching version numbers if
+    applicable. If the versions do not match, the script exists with an error.
 
-    In addition to running 'npm publish', the -d switch will copy $PACKAGE_JSON, $SHRINKWRAP_JSON, and the $GIT_DIR
-    directory to $DIST_DIR.
+    The -d switch publishes the $DIST_DIR directory by copying its contents to the root directory. The .npmignore file
+    is expected to list anything in the root that should not be published.
+
+    Note: In order to support semantic-release, 'npm publish' must be run from the root instead of the $DIST_DIR
+    directory. When publishing a sub folder, npm loses the ability to insert the correct gitHead information, which
+    prevents semantic-release from working properly.
 
     Note:
 
@@ -102,7 +103,7 @@ cat <<- EEOOFF
 
     OPTIONS:
     h       Display this message (default)
-    d       Publish $DIST directory
+    d       Publish $DIST_DIR directory
 
 EEOOFF
 }
@@ -122,8 +123,8 @@ EEOOFF
   prereqs
 
   if [ -n "$PUBLISH_DIST" ]; then
-    publish_npm_dist
-  else
-    publish_npm
+    publish_dist
   fi
+
+  publish_npm
 }
