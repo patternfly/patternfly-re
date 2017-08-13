@@ -56,10 +56,6 @@ shrinkwrap()
   echo "*** Shrink wrapping $SHRINKWRAP_JSON"
   cd $BUILD_DIR
 
-  if [ -n "$PTNFLY_ENG_RELEASE" ]; then
-    return
-  fi
-
   # Only include production dependencies with shrinkwrap
   npm prune --production
 
@@ -79,7 +75,9 @@ usage()
 {
 cat <<- EEOOFF
 
-    This script will bump the version number in PatternFly JS, shrinkwrap, test, and verify npm/bower installs
+    This script will bump the version number in PatternFly JS, shrinkwrap, test, and verify npm/bower installs.
+
+    Note: Currently, only PatternFly and Angular PatternFly have a $SHRINKWRAP_JSON file.
 
     sh [-x] $SCRIPT [-h] -a|e|p|w|x
 
@@ -132,7 +130,11 @@ verify()
   build_install
   build
   build_test
-  shrinkwrap
+
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+    shrinkwrap
+  fi
+
   verify
   publish_branch
 }
