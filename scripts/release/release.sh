@@ -215,32 +215,6 @@ push()
   echo "*** Review changes and create a PR via GitHub"
 }
 
-# Shrink wrap npm and run vulnerability test
-#
-shrinkwrap()
-{
-  echo "*** Shrink wrapping $SHRINKWRAP_JSON"
-  cd $BUILD_DIR
-
-  if [ -n "$PTNFLY_ENG_RELEASE" ]; then
-    return
-  fi
-
-  # Only include production dependencies with shrinkwrap
-  npm prune --production
-
-  npm shrinkwrap
-  check $? "npm shrinkwrap failure"
-
-  # Restore dependencies
-  npm install
-
-  if [ -s "$NSP" -a -s "$SHRINKWRAP_JSON" ]; then
-    node $NSP --shrinkwrap npm-shrinkwrap.json check --output summary
-    check $? "shrinkwrap vulnerability found" warn
-  fi
-}
-
 usage()
 {
 cat <<- EEOOFF
