@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Force dist branch to be created for main repo
+# DIST_BRANCH=1
+
 # Build PatternFly templates using Jekyll
 export PF_PAGE_BUILDER=jekyll
 
@@ -17,10 +20,8 @@ RELEASE_BRANCH=master
 RELEASE_DIST_BRANCH=master-dist
 
 # PF 'next' branches (i.e., PF4 alpha, beta, etc.)
-#NEXT_BRANCH=branch-4.0-dev
-#NEXT_DIST_BRANCH=branch-4.0-dev-dist
-NEXT_BRANCH=showcases
-NEXT_DIST_BRANCH=showcases-dist
+NEXT_BRANCH=branch-4.0-dev
+NEXT_DIST_BRANCH=branch-4.0-dev-dist
 NEXT_TAG=next
 
 # Tag prefix for bumping version of a single repo (e.g., _bump-v3.15.0)
