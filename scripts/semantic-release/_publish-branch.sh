@@ -50,7 +50,8 @@ push_dist()
   # Push to dist branch
   EXISTING=`git ls-remote --heads https://github.com/$TRAVIS_REPO_SLUG.git $BRANCH_DIST`
 
-  if [ -n "$EXISTING" ]; then
+  # Skip merge if we're building a forked repo
+  if [ -n "$EXISTING" -a -z "$REPO_FORK" ]; then
     git fetch upstream $BRANCH_DIST:$BRANCH_DIST # <remote-branch>:<local-branch>
     git checkout $BRANCH_DIST
     git merge -X theirs $TRAVIS_BRANCH-local --no-edit --ff
@@ -58,7 +59,7 @@ push_dist()
 
     git push upstream $BRANCH_DIST -v
   else
-    git push upstream $TRAVIS_BRANCH-local:$BRANCH_DIST -v # <local-branch>:<remote-branch>
+    git push upstream $TRAVIS_BRANCH-local:$BRANCH_DIST -f -v # <local-branch>:<remote-branch>
   fi
   check $? "git push failure"
 }
@@ -89,15 +90,15 @@ cat <<- EEOOFF
 
     AUTH_TOKEN must be set via Travis CI.
 
-    sh [-x] $SCRIPT [-h|f] -c|d|o
+    sh [-x] $SCRIPT [-h] -c|d|o
 
     Example: sh $SCRIPT -d
 
     OPTIONS:
     h       Display this message (default)
-    c       Commit all changes
-    d       Force commit dist directory
-    o       Force commit dist-demo directory
+    c       Commit changes
+    d       Commit dist directory
+    o       Commit dist-demo directory
 
 EEOOFF
 }

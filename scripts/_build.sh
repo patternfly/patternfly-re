@@ -19,7 +19,14 @@ prereqs()
   echo "*** This build is running against $TRAVIS_REPO_SLUG"
   cd $BUILD_DIR
 
-  if [ -n "$TRAVIS_TAG" ]; then
+  # Ensure semantic release runs for applicable repos
+  case $SWITCH in
+    a|e|p|w|x) SYMANTIC_RELEASE=1;;
+  esac
+
+  if [ -n "$SYMANTIC_RELEASE" ]; then
+    echo "*** This build is running a semantic release"
+  elif [ -n "$TRAVIS_TAG" ]; then
     echo "*** This build is running against $TRAVIS_TAG"
 
     # Get version from tag
@@ -73,23 +80,18 @@ EEOOFF
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
-         SYMANTIC_RELEASE=1;
          SWITCH=a;;
       e) PTNFLY_ENG_RELEASE=1;
-         SYMANTIC_RELEASE=1;
          SWITCH=e;;
       o) PTNFLY_ORG=1;
          SWITCH=o;;
       p) PTNFLY=1;
-         SYMANTIC_RELEASE=1;
          SWITCH=p;;
       r) RCUE=1;
          SWITCH=r;;
       w) PTNFLY_WC=1;
-         SYMANTIC_RELEASE=1;
          SWITCH=w;;
       x) PTNFLY_NG=1;
-         SYMANTIC_RELEASE=1;
          SWITCH=x;;
       \?) usage; exit 1;;
     esac
@@ -107,6 +109,7 @@ EEOOFF
     check $? "Release failure"
   elif [ -n "$SYMANTIC_RELEASE" ]; then
     sh -x $SCRIPT_DIR/semantic-release/_release.sh -$SWITCH
+    check $? "Semantic release failure"
   else
     build_install
     build
