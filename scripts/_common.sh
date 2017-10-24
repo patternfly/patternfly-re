@@ -7,13 +7,8 @@ build()
   echo "*** Building `pwd`"
   cd $BUILD_DIR
 
-  # NPM script build
-  JUNK=`npm run | grep build`
-
   # Grunt build
-  if [ "$?" -eq 0 ]; then
-    npm run build
-  elif [ -s "$GRUNT_FILE_JS" ]; then
+  if [ -s "$GRUNT_FILE_JS" ]; then
     JUNK=`grep production "$GRUNT_FILE_JS"`
     if [ "$?" -eq 0 ]; then
       PRODUCTION=:production
@@ -25,6 +20,12 @@ build()
     fi
   elif [ -s "$GULP_FILE_JS" ]; then
     gulp build
+  else
+    # NPM script build
+    JUNK=`npm run | awk -F' ' '{print $1}' | grep '^build'`
+    if [ "$?" -eq 0 ]; then
+      npm run build
+    fi
   fi
   check $? "Build failure"
 
