@@ -109,6 +109,9 @@ verify()
   build
   build_test
 
+  $SCRIPT_DIR/_regression-test.sh
+  check $? "Regression test failure"
+
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
     shrinkwrap
   fi
