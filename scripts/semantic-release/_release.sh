@@ -53,7 +53,7 @@ usage()
 {
 cat <<- EEOOFF
 
-    This script will bump the version number in PatternFly JS, shrinkwrap, test, and verify npm/bower installs.
+    This script will build, shrinkwrap, test, and verify npm/bower installs.
 
     Note: Currently, only PatternFly and Angular PatternFly have a $SHRINKWRAP_JSON file.
 
