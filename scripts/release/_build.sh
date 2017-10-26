@@ -207,4 +207,9 @@ EEOOFF
       add_bump_tag $REPO_NAME_PTNFLY $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY
     fi
   fi
+
+  # Generate release notes
+  if [ -n "$RCUE" ]; then
+    sh -x $SCRIPT_DIR/_release-notes.sh -v $VERSION -$SWITCH
+  fi
 }
