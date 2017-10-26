@@ -17,22 +17,23 @@ default()
   . $SCRIPT_DIR/_common.sh
 
   BUILD_DIR=$TRAVIS_BUILD_DIR
+  VERSION=`npm show patternfly version`
 }
 
 usage()
 {
 cat <<- EEOOFF
 
-    This script is a wrapper for the legacy release-all.sh script to automate PatternFly releases.
+    This script is a wrapper for the legacy release-all.sh script to automate releases using the latest version of
+    PatternFly $VERSION
 
-    Currently, only RCUE is supported
+    sh [-x] $SCRIPT [-h] -o|r
 
-    sh [-x] $SCRIPT [-h] -r
-
-    Example: sh $SCRIPT -r
+    Example: sh $SCRIPT -o|r
 
     OPTIONS:
     h       Display this message (default)
+    o       PatternFly Org
     r       RCUE
 
 EEOOFF
@@ -50,14 +51,13 @@ EEOOFF
   while getopts hr c; do
     case $c in
       h) usage; exit 0;;
+      o) RCUE=1;
+         SWITCH=-o;;
       r) RCUE=1;
          SWITCH=-r;;
       \?) usage; exit 1;;
     esac
   done
 
-  if [ -n "$RCUE" ]; then
-    VERSION=`npm show patternfly version`
-    $SCRIPT_DIR/../release/release-all.sh $SWITCH -v $VERSION
-  fi
+  $SCRIPT_DIR/../release/release-all.sh $SWITCH -v $VERSION
 }
