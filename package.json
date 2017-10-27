@@ -7,7 +7,7 @@
   "devDependencies": {
     "semantic-release": "^6.3.6"
   },
-  "description": "A set of release engineering scripts for PatternFly, Angular PatternFly, PatternFly Org, and RCUE.",
+  "description": "A set of release engineering scripts for PatternFly, PatternFly NG, Angular PatternFly, PatternFly Org, and RCUE.",
   "repository": {
     "type": "git",
     "url": "https://github.com/patternfly/patternfly-eng-release.git"
