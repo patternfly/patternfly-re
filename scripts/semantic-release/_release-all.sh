@@ -48,10 +48,10 @@ EEOOFF
     exit 1
   fi
 
-  while getopts hr c; do
+  while getopts hor c; do
     case $c in
       h) usage; exit 0;;
-      o) RCUE=1;
+      o) PTNFLY_ORG=1;
          SWITCH=-o;;
       r) RCUE=1;
          SWITCH=-r;;

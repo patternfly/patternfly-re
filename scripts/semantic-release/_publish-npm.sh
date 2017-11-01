@@ -50,6 +50,16 @@ prereqs()
 
 # Publish dist
 #
+# The contents of dist directory are copied back to the root directory, overriding anything in the root which is already
+# in dist. Therfore, the .npmignore file is expected to list anything in the root that should not be published.
+#
+# May want to npm install within the dist dir, instead?
+# https://github.com/lerna/lerna/issues/296
+#
+# Note: In order to support semantic-release, 'npm publish' must be run from the root instead of the $DIST_DIR
+# directory. When publishing a sub folder, npm loses the ability to insert the correct gitHead information, which
+# prevents semantic-release from working properly.
+#
 publish_dist() {
   echo "*** Copying $DIST_DIR to root"
   cd $BUILD_DIR
@@ -65,17 +75,31 @@ publish_dist() {
   check $? "Move files failure"
 }
 
+# Publish dist (experimental)
+#
+# Files such as license, readme, package.json, etc. are copied to the dist directory. The npm publish is performed
+# within dist.
+#
+publish_dist_exp() {
+  echo "*** Publishing $DIST_DIR"
+  cd $BUILD_DIR
+
+  cp $PACKAGE_JSON $LICENSE $README $NPM_IGNORE $DIST_DIR
+  cd $DIST_DIR
+
+  npm publish
+  check $? "npm publish failure"
+
+  # Return to root for semantic release post step
+  cd $BUILD_DIR
+}
+
 # Publish npm
 #
 publish_npm()
 {
   echo "*** Publishing npm"
   cd $BUILD_DIR
-
-  if [ -f "$SKIP_NPM_PUBLISH" ]; then
-    echo "*** Found $SKIP_NPM_PUBLISH file indicator. Do not publish!"
-    exit 1
-  fi
 
   npm publish
   check $? "npm publish failure"
@@ -91,19 +115,22 @@ cat <<- EEOOFF
     The -d switch publishes the $DIST_DIR directory by copying its contents to the root directory. The .npmignore file
     is expected to list anything in the root that should not be published.
 
+    The -e switch is an experimental implementation that publishes within the $DIST_DIR directory.
+
     Note: In order to support semantic-release, 'npm publish' must be run from the root instead of the $DIST_DIR
     directory. When publishing a sub folder, npm loses the ability to insert the correct gitHead information, which
     prevents semantic-release from working properly.
 
     Note:
 
-    sh [-x] $SCRIPT [-h|d]
+    sh [-x] $SCRIPT [-h] -d|e
 
     Example: sh $SCRIPT -d
 
     OPTIONS:
     h       Display this message (default)
     d       Publish $DIST_DIR directory
+    e       Publish $DIST_DIR directory (experimental)
 
 EEOOFF
 }
@@ -112,19 +139,27 @@ EEOOFF
 {
   default
 
-  while getopts hd c; do
+  while getopts hde c; do
     case $c in
       h) usage; exit 0;;
       d) PUBLISH_DIST=1;;
+      e) PUBLISH_DIST_EXP=1;;
       \?) usage; exit 1;;
     esac
   done
 
   prereqs
 
-  if [ -n "$PUBLISH_DIST" ]; then
-    publish_dist
+  if [ -f "$SKIP_NPM_PUBLISH" ]; then
+    echo "*** Found $SKIP_NPM_PUBLISH file indicator. Do not publish!"
+    exit 0
   fi
 
-  publish_npm
+  if [ -n "$PUBLISH_DIST" ]; then
+    publish_dist
+  elif [ -n "$PUBLISH_DIST_EXP" ]; then
+    publish_dist_exp
+  else
+    publish_npm
+  fi
 }
