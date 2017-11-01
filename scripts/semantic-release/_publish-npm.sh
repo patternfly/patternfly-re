@@ -53,12 +53,11 @@ prereqs()
 # The contents of dist directory are copied back to the root directory, overriding anything in the root which is already
 # in dist. Therfore, the .npmignore file is expected to list anything in the root that should not be published.
 #
-# May want to npm install within the dist dir, instead?
-# https://github.com/lerna/lerna/issues/296
-#
 # Note: In order to support semantic-release, 'npm publish' must be run from the root instead of the $DIST_DIR
 # directory. When publishing a sub folder, npm loses the ability to insert the correct gitHead information, which
 # prevents semantic-release from working properly.
+#
+# See: https://github.com/npm/read-package-json/issues/66
 #
 publish_dist() {
   echo "*** Copying $DIST_DIR to root"
@@ -116,10 +115,6 @@ cat <<- EEOOFF
     is expected to list anything in the root that should not be published.
 
     The -e switch is an experimental implementation that publishes within the $DIST_DIR directory.
-
-    Note: In order to support semantic-release, 'npm publish' must be run from the root instead of the $DIST_DIR
-    directory. When publishing a sub folder, npm loses the ability to insert the correct gitHead information, which
-    prevents semantic-release from working properly.
 
     Note:
 
