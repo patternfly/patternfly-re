@@ -19,6 +19,20 @@ default()
   BUILD_DIR=$TRAVIS_BUILD_DIR
 }
 
+build_aot()
+{
+  echo "*** Testing AOT build"
+  cd $BUILD_DIR
+
+  # NPM script build
+  JUNK=`npm run | awk -F' ' '{print $1}' | grep '^build:demo$'`
+
+  if [ "$?" -eq 0 ]; then
+    npm run build:demo
+    check $? "*** AOT compilation failure"
+  fi
+}
+
 # Clean shrinkwrap
 #
 clean_shrinkwrap()
@@ -108,6 +122,10 @@ verify()
   build_install
   build
   build_test
+
+  if [ -n "$PTNFLY_NG" ]; then
+    build_aot
+  fi
 
   $SCRIPT_DIR/_regression-test.sh
   check $? "Regression test failure"
