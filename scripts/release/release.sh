@@ -196,7 +196,7 @@ commit()
   cd $BUILD_DIR
 
   git add -u
-  git commit -m "Bumped version number to $VERSION"
+  git commit --no-verify -m "chore(release): bump version number to $VERSION"
 }
 
 # Push changes to remote repo
@@ -229,14 +229,14 @@ cat <<- EEOOFF
 
     OPTIONS:
     h       Display this message (default)
-    a       Angular PatternFly (DISABLED for semantic release)
-    e       PatternFly Eng Release (DISABLED for semantic release)
+    a       Angular PatternFly
+    e       PatternFly Eng Release
     o       PatternFly Org
-    p       PatternFly (DISABLED for semantic release)
+    p       PatternFly
     r       RCUE
     v       The version number (e.g., 3.15.0)
-    w       PatternFly Web Components (DISABLED for semantic release)
-    x       Patternfly NG (DISABLED for semantic release)
+    w       PatternFly Web Components
+    x       Patternfly NG
 
     SPECIAL OPTIONS:
     b       The branch to release (e.g., $NEXT_BRANCH)
@@ -287,20 +287,20 @@ verify()
   while getopts hab:efgnoprsv:wx c; do
     case $c in
       h) usage; exit 0;;
-      a) PTNFLY_ANGULAR=1; usage; exit 1;; # DISABLED
+      a) PTNFLY_ANGULAR=1;;
       b) BRANCH=$OPTARG;;
-      e) PTNFLY_ENG_RELEASE=1; usage; exit 1;; # DISABLED
+      e) PTNFLY_ENG_RELEASE=1;;
       f) REPO_FORK=1;;
       g) PUSH=1;;
       n) BRANCH_DIST=$NEXT_DIST_BRANCH;;
       o) PTNFLY_ORG=1;;
-      p) PTNFLY=1; usage; exit 1;; # DISABLED
+      p) PTNFLY=1;;
       r) RCUE=1;;
       s) SKIP_SETUP=1;;
       v) VERSION=$OPTARG;
          BUMP_BRANCH=bump-v$VERSION;;
-      w) PTNFLY_WC=1; usage; exit 1;; # DISABLED
-      x) PTNFLY_NG=1; usage; exit 1;; # DISABLED
+      w) PTNFLY_WC=1;;
+      x) PTNFLY_NG=1;;
       \?) usage; exit 1;;
     esac
   done
