@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 default()
 {
@@ -195,7 +195,7 @@ commit()
   echo "*** Committing changes"
   cd $BUILD_DIR
 
-  git add -u
+  git add -A
   git commit --no-verify -m "chore(release): bump version number to $VERSION"
 }
 
@@ -215,6 +215,19 @@ push()
   echo "*** Review changes and create a PR via GitHub"
 }
 
+# Run regression test
+#
+regression_test()
+{
+  echo "*** Running regression test"
+  cd $BUILD_DIR
+
+  if [ -s "backstop/test.js" ]; then
+    node ./backstop/test
+    check $? "Regression test failure"
+  fi
+}
+
 usage()
 {
 cat <<- EEOOFF
@@ -226,6 +239,7 @@ cat <<- EEOOFF
     sh [-x] $SCRIPT [-h|b|f|g|n|s] -a|e|o|p|r|w|x -v <version>
 
     Example: sh $SCRIPT -v 3.15.0 -p
+    Example: sh $SCRIPT -v 3.30.0-beta -p -g -b sass-preview
 
     OPTIONS:
     h       Display this message (default)
@@ -368,6 +382,7 @@ verify()
   build_install
   build
   build_test
+  regression_test
 
   if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" -o -n "$PTNFLY_WC" ]; then
     shrinkwrap
