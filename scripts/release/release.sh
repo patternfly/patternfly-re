@@ -109,7 +109,7 @@ bump_package()
     #sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\",|" > $PACKAGE_JSON.tmp
 
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" > $PACKAGE_JSON.tmp
+    sed "s|\"patternfly\": \".*|\"patternfly\": \"$PKG_PTNFLY\",|" > $PACKAGE_JSON.tmp
   elif [ -n "$RCUE" ]; then
     #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
