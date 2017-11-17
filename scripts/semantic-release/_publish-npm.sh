@@ -150,10 +150,11 @@ EEOOFF
     exit 0
   fi
 
-  if [ -n "$PUBLISH_DIST" ]; then
-    publish_dist
-  elif [ -n "$PUBLISH_DIST_EXP" ]; then
+  if [ -n "$PUBLISH_DIST_EXP" ]; then
     publish_dist_exp
+  elif [ -n "$PUBLISH_DIST" ]; then
+    publish_dist
+    publish_npm
   else
     publish_npm
   fi
