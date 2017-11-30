@@ -19,8 +19,6 @@ default()
   BRANCH=$RELEASE_BRANCH
   BRANCH_DIST=$RELEASE_DIST_BRANCH
   TMP_DIR="/tmp/patternfly-releases"
-
-  COMMIT_SWICTH=-u
 }
 
 # Bump version number in bower.json
@@ -197,7 +195,10 @@ commit()
   echo "*** Committing changes"
   cd $BUILD_DIR
 
-  git add $COMMIT_SWICTH
+  git add -A
+  if [ -n "COMMIT_DIST" ]; then
+    git add $DIST_DIR --force
+  fi
   git commit --no-verify -m "chore(release): bump version number to $VERSION"
 }
 
@@ -256,7 +257,7 @@ cat <<- EEOOFF
 
     SPECIAL OPTIONS:
     b       The branch to release (e.g., $NEXT_BRANCH)
-    c       Commit all changed Vs updated files (e.g., force dist to be included)
+    d       Commit dist directory
     f       Run against repo fork matching local username (e.g., `whoami`/patternfly)
     g       Push new branch to GitHub (e.g., bump-v3.15.0)
     n       Release PF 'next' branches (e.g., PF4 alpha, beta, etc.)
@@ -301,12 +302,12 @@ verify()
     exit 1
   fi
 
-  while getopts hab:cefgnoprsv:wx c; do
+  while getopts hab:defgnoprsv:wx c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;;
       b) BRANCH=$OPTARG;;
-      c) COMMIT_SWICTH=-A;;
+      d) COMMIT_DIST=1;;
       e) PTNFLY_ENG_RELEASE=1;;
       f) REPO_FORK=1;;
       g) PUSH=1;;
