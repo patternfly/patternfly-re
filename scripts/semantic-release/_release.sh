@@ -123,9 +123,10 @@ verify()
   build
   build_test
 
-  if [ -n "$PTNFLY_NG" ]; then
-    build_aot
-  fi
+  # build:demo is already run
+  #if [ -n "$PTNFLY_NG" ]; then
+  #  build_aot
+  #fi
 
   $SCRIPT_DIR/_regression-test.sh
   check $? "Regression test failure"
