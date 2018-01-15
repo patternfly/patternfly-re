@@ -196,7 +196,7 @@ commit()
   cd $BUILD_DIR
 
   git add -A
-  if [ -n "COMMIT_DIST" ]; then
+  if [ -n "$COMMIT_DIST" ]; then
     git add $DIST_DIR --force
   fi
   git commit --no-verify -m "chore(release): bump version number to $VERSION"
