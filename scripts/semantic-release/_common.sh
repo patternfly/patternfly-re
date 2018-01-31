@@ -1,5 +1,23 @@
 #!/bin/sh
 
+# Setup env for use with GitHub
+#
+git_setup()
+{
+  echo "*** Setting up Git env"
+  cd $BUILD_DIR
+
+  # Add PatternFly Org as a remote
+  git remote rm $REPO_NAME_PTNFLY_ORG
+  git remote add $REPO_NAME_PTNFLY_ORG https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ORG.git
+  check $? "git add remote failure"
+
+  # Add RCUE as the next remote
+  git remote rm $REPO_NAME_RCUE
+  git remote add $REPO_NAME_RCUE https://$AUTH_TOKEN@github.com/$REPO_SLUG_RCUE.git
+  check $? "git add remote failure"
+}
+
 # Check prerequisites before continuing
 #
 merge_prereqs()

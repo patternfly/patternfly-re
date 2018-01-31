@@ -126,4 +126,4 @@ PACKAGE_JSON=package.json
 PTNFLY_SETTINGS_JS=src/js/patternfly-settings-base.js
 README=README.md
 SHRINKWRAP_JSON=npm-shrinkwrap.json
-SKIP_NPM_PUBLISH=skip-npm-publish.txt
+SKIP_NPM_PUBLISH_FILE=skip-npm-publish.txt

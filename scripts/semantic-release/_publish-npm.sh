@@ -145,8 +145,8 @@ EEOOFF
 
   prereqs
 
-  if [ -f "$SKIP_NPM_PUBLISH" ]; then
-    echo "*** Found $SKIP_NPM_PUBLISH file indicator. Do not publish!"
+  if [ -f "$SKIP_NPM_PUBLISH_FILE" ]; then
+    echo "*** Found $SKIP_NPM_PUBLISH_FILE file indicator. Do not publish!"
     exit 0
   fi
 
