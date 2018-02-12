@@ -45,9 +45,9 @@ prereqs()
 {
   echo "*** This build is running against $TRAVIS_REPO_SLUG"
 
-  # Ensure release runs for main repo only
-  if [ "$TRAVIS_REPO_SLUG" != "$REPO_SLUG" ]; then
-    check 1 "Release must be performed on $REPO_SLUG only!"
+  # Ensure release runs for main PatternFly repo only
+  if [ "$TRAVIS_REPO_SLUG" != "$REPO_SLUG_PTNFLY" ]; then
+    check 1 "Release must be performed on $REPO_SLUG_PTNFLY only!"
   fi
 
   git tag | grep "^$RELEASE_TAG_PREFIX$VERSION$"
