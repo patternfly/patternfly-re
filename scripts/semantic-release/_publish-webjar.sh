@@ -35,7 +35,7 @@ prereqs()
     sed 's|,||g' | \
     sed 's| *||g'`
 
-  if [ "$?" -ne 0 -a "$VERSION" != "0.0.0-semantically-released" ]; then
+  if [ "$?" -eq 0 -a "$VERSION" != "0.0.0-semantically-released" ]; then
     echo "*** Found package version: $VERSION"
   else
     echo "*** The $PACKAGE_JSON version has not been updated. Do not publish!"
