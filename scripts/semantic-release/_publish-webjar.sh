@@ -52,8 +52,11 @@ publish_bower()
   merge_prereqs
   cd $BUILD_DIR
 
+  # OLD
   # http://www.webjars.org/_bower/deploy?name=patternfly&version=3.18.1&channelId=e2627542-dd69-362d-8860-05704720017f
-  curl -X POST "http://www.webjars.org/_bower/deploy?name=$1&version=$2&channelId=`random_guid`"
+  # curl -X POST "http://www.webjars.org/_bower/deploy?name=$1&version=$2&channelId=`random_guid`"
+
+  curl -X POST "https://www.webjars.org/deploy?webJarType=bower&nameOrUrlish=$1&version=$2"
   check $? "publish bower webjar failure"
 
   printf "\n"
@@ -68,8 +71,11 @@ publish_npm()
   echo "*** Publishing npm to webjar"
   cd $BUILD_DIR
 
+  # OLD
   # http://www.webjars.org/_npm/deploy?name=patternfly&version=3.18.1&channelId=e2627542-dd69-362d-8860-05704720017f
-  curl -X POST "http://www.webjars.org/_npm/deploy?name=$1&version=$2&channelId=`random_guid`"
+  # curl -X POST "http://www.webjars.org/_npm/deploy?name=$1&version=$2&channelId=`random_guid`"
+
+  curl -X POST "https://www.webjars.org/deploy?webJarType=npm&nameOrUrlish=$1&version=$2"
   check $? "publish npm webjar failure"
 
   printf "\n"
