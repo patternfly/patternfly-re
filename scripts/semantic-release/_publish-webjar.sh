@@ -75,8 +75,35 @@ publish_npm()
   # http://www.webjars.org/_npm/deploy?name=patternfly&version=3.18.1&channelId=e2627542-dd69-362d-8860-05704720017f
   # curl -X POST "http://www.webjars.org/_npm/deploy?name=$1&version=$2&channelId=`random_guid`"
 
-  curl -X POST "https://www.webjars.org/deploy?webJarType=npm&nameOrUrlish=$1&version=$2"
-  check $? "publish npm webjar failure"
+  # Todo: Cannot deploy bower webjar due to non-spec-compliant licenses
+  #
+  # Got package info for org.webjars.bower google-code-prettify 1.0.5
+  # All attempts to determine an acceptable license have been exhausted. The bower.json file did not contain a
+  # spec-compliant license definition and the license could not be determined by trolling through the source repo:
+  # https://github.com/spencewood/google-code-prettify.git
+  # The acceptable open source software licenses are at bottom of: https://bintray.com/docs/api/
+  # The provided licenses were:
+  # This problem will likely need to be resolved by working with the library maintainers directly.
+  #
+  # Got package info for org.webjars.bower patternfly-bootstrap-combobox 1.1.7
+  # All attempts to determine an acceptable license have been exhausted. The bower.json file did not contain a
+  # spec-compliant license definition and the license could not be determined by trolling through the source repo:
+  # https://github.com/patternfly/patternfly-bootstrap-combobox.git
+  # The acceptable open source software licenses are at bottom of: https://bintray.com/docs/api/
+  # The provided licenses were: Apache 2.0
+  # This problem will likely need to be resolved by working with the library maintainers directly.
+  #
+  # Got package info for org.webjars.bower datatables-colvis 1.1.2
+  # All attempts to determine an acceptable license have been exhausted. The bower.json file did not contain a
+  # spec-compliant license definition and the license could not be determined by trolling through the source repo:
+  # https://github.com/DataTables/ColVis.git
+  # The acceptable open source software licenses are at bottom of: https://bintray.com/docs/api/
+  # The provided licenses were:
+  # This problem will likely need to be resolved by working with the library maintainers directly.
+
+  # curl -X POST "https://www.webjars.org/deploy?webJarType=npm&nameOrUrlish=$1&version=$2"
+  # check $? "publish npm webjar failure"
+  echo "BOWER DEPLOY IS DISABLED due to non-spec-compliant licenses"
 
   printf "\n"
 }
