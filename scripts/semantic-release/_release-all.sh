@@ -115,4 +115,8 @@ EEOOFF
   if [ -n "$RCUE" ]; then
     add_bump_tag $REPO_NAME_RCUE $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_RCUE
   fi
+
+  # Restore local branch for other scripts
+  git checkout $TRAVIS_BRANCH-local
+  check $? "git checkout failure"
 }

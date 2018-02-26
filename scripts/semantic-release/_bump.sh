@@ -108,10 +108,10 @@ publish_branch()
 #
 skip_npm_publish()
 {
-  echo "*** Creating $SKIP_NPM_PUBLISH"
+  echo "*** Creating $SKIP_NPM_PUBLISH_FILE"
   cd $BUILD_DIR
 
-  touch $SKIP_NPM_PUBLISH
+  touch $SKIP_NPM_PUBLISH_FILE
   check $? "Touch file failure"
 }
 
