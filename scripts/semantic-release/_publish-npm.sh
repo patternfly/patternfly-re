@@ -86,7 +86,12 @@ publish_dist_exp() {
   cp $PACKAGE_JSON $LICENSE $README $NPM_IGNORE $DIST_DIR
   cd $DIST_DIR
 
-  npm publish
+  JUNK=`grep '"name": "@' package.json`
+  if [ "$?" -eq 0 ]; then
+    ACCESS_FLAG="--access public"
+  fi
+
+  npm publish $ACCESS_FLAG
   check $? "npm publish failure"
 
   # Return to root for semantic release post step
@@ -112,7 +117,12 @@ publish_npm()
     check $? "npm login failure"
   fi
 
-  npm publish
+  JUNK=`grep '"name": "@' package.json`
+  if [ "$?" -eq 0 ]; then
+    ACCESS_FLAG="--access public"
+  fi
+
+  npm publish $ACCESS_FLAG
   check $? "npm publish failure"
 }
 
