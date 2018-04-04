@@ -41,10 +41,15 @@ publish_npm()
 
   # Tag PF 'next' release: https://medium.com/@mbostock/prereleases-and-npm-e778fc5e2420#.s6a099w69
   if [ -n "$TAG_NEXT" ]; then
-    npm publish -tag next
-  else
-    npm publish
+    TAG_FLAG="-tag next"
   fi
+
+  JUNK=`grep '"name": "@' package.json`
+  if [ "$?" -eq 0 ]; then
+    ACCESS_FLAG="--access public"
+  fi
+
+  npm publish $ACCESS_FLAG $TAG_FLAG
   check $? "npm publish failure"
 }
 
