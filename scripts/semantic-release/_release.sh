@@ -55,7 +55,7 @@ publish_branch()
   esac
 
   if [ -n "$PTNFLY_NG" ]; then
-    sh -x $SCRIPT_DIR/_publish-branch.sh -c -d -o
+    sh -x $SCRIPT_DIR/_publish-branch.sh -c -d -o -s
     check $? "Publish failure"
   elif [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
     sh -x $SCRIPT_DIR/_publish-branch.sh -c -d
