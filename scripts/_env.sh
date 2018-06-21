@@ -123,6 +123,7 @@ LICENSE=LICENSE.txt
 NPM_IGNORE=.npmignore
 NSP=node_modules/nsp/bin/nsp
 PACKAGE_JSON=package.json
+PACKAGE_LOCK_JSON=package-lock.json
 PTNFLY_SETTINGS_JS=src/js/patternfly-settings-base.js
 README=README.md
 SHRINKWRAP_JSON=npm-shrinkwrap.json
