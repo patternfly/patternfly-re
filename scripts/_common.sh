@@ -141,7 +141,7 @@ shrinkwrap()
   echo "*** Shrink wrapping $SHRINKWRAP_JSON"
   cd $BUILD_DIR
 
-  if [ -n "$PTNFLY_ENG_RELEASE" ]; then
+  if [ -s "$PACKAGE_LOCK_JSON" -o -n "$PTNFLY_ENG_RELEASE" ]; then
     return
   fi
 
