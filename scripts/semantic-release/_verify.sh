@@ -54,7 +54,8 @@ verify()
   cd $1
 
   if [ -s "$2/$PACKAGE_JSON" ]; then
-    npm install $2
+    # Using pack to avoid installing a softlink
+    npm install `npm pack $2`
     check $? "npm install failure"
 
     if [ ! -d "$1"/node_modules ]; then
