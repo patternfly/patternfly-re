@@ -7,7 +7,7 @@ build()
   echo "*** Building `pwd`"
   cd $BUILD_DIR
 
-  # NPM script build
+  # NPM build
   JUNK=`npm run | awk -F' ' '{print $1}' | grep '^build$'`
 
   if [ "$?" -eq 0 ]; then
@@ -28,14 +28,22 @@ build()
   fi
   check $? "Build failure"
 
-  # NG Doc build
+  # NPM demo build for patternfly-ng
+  JUNK=`npm run | awk -F' ' '{print $1}' | grep '^build:demo$'`
+
+  if [ "$?" -eq 0 ]; then
+    npm run build:demo
+    check $? "Demo build failure"
+  fi
+
+  # NG Doc build for angular patternfly
   if [ -s "$GRUNT_NGDOCS_TMPL" ]; then
     echo "*** Building ngDocs: `pwd`"
     grunt ngdocs:publish
     check $? "ngDocs build failure"
   fi
 
-  # JS Doc build
+  # JS Doc build for webcomponents
   if [ -s "$JSDOC_CONF_JSON" ]; then
     echo "*** Building jsDoc: `pwd`"
     gulp doc
