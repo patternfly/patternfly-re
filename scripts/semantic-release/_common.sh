@@ -12,10 +12,6 @@ git_setup()
   git remote add $REPO_NAME_PTNFLY_ORG https://$AUTH_TOKEN@github.com/$REPO_SLUG_PTNFLY_ORG.git
   check $? "git add remote failure"
 
-  # Add RCUE as the next remote
-  git remote rm $REPO_NAME_RCUE
-  git remote add $REPO_NAME_RCUE https://$AUTH_TOKEN@github.com/$REPO_SLUG_RCUE.git
-  check $? "git add remote failure"
 }
 
 # Check prerequisites before continuing

@@ -1,5 +1,5 @@
 # patternfly-eng-release
-A set of release engineering scripts for PatternFly, Angular PatternFly, PatternFly Org, and RCUE
+A set of release engineering scripts for PatternFly, Angular PatternFly, PatternFly Org
 
 ## Builds
 
@@ -13,7 +13,7 @@ Where applicable to each repo, the scripts may clone a new GitHub repo, bump the
 
 The automated release build begins with the build/release/release-all.sh script. This script will push a custom release tag to the repo's master branch, which triggers Travis to run the build/release/build.sh script. Version bump changes are pushed back to the master branch. The version bump and generated build changes are pushed to master-dist and tagged (e.g., v3.15.0).
 
-Release builds are chained together by pushing a new custom release tag to the next repo. For example, if the PatternFly RE release is successful, PatternFly is built next. If the PatternFly release is successful, RCUE and Angular PatternFly are built simultaneously. If Angular is successful, PatternFly Org is released as well.
+Release builds are chained together by pushing a new custom release tag to the next repo. For example, if the PatternFly RE release is successful, PatternFly is built next. If the PatternFly release is successful, Angular PatternFly is built. If Angular is successful, PatternFly Org is released as well.
 
 Should a release build fail at any point, it can be fixed and restarted. For example, If Angular PatternFly fails, it can be restarted and the PatternFly Org release will follow. We don't necessarily need to bump the npm version number again or rebuild Patternfy. The npm publish is one of the last steps in the build.
 
@@ -21,7 +21,7 @@ Of course, we still have the ability to run the release manually using the build
 
 ### build/release/release-all.sh
 
-This script is used to automate and chain releases together. For example, when the PatternFly RE release is complete, PatternFly is built next. When the PatternFly release is complete, the release processes for Angular PatternFly and RCUE are kicked off simultaneously. When the Angular PatternFly release is complete, PatternFly Org shall be released as well.
+This script is used to automate and chain releases together. For example, when the PatternFly RE release is complete, PatternFly is built next. When the PatternFly release is complete, the release processes for Angular PatternFly is kicked off. When the Angular PatternFly release is complete, PatternFly Org shall be released as well.
 
 Although there is no PR to deal with here, creating release notes is still a task which must be performed manually via GitHub.
 
@@ -85,7 +85,6 @@ Alternatively, the following variables may be overridden to test forked repos an
 - REPO_SLUG_PTNFLY_ANGULAR=`owner_name`/angular-patternfly
 - REPO_SLUG_PTNFLY_ORG=`owner_name`/patternfly-org
 - REPO_SLUG_PTNFLY_ENG_RELEASE=`owner_name`/patternfly-eng-release
-- REPO_SLUG_RCUE=`owner_name`/rcue
 - SKIP_NPM_PUBLISH=1
 - SKIP_WEBJAR_PUBLISH=1
 
@@ -129,8 +128,8 @@ This script will bump version numbers, build, shrinkwrap, test, install, push to
 7. Community email sent to announce release
 
 ### build/release/publish-npm.sh
- 
+
 This script will npm publish from the latest repo clone or Travis build.
- 
+
 1. Create an NPM account and become a collaborator for https://www.npmjs.com/package/patternfly
  - Run sh ./build/release/publish-npm.sh -a|e|p

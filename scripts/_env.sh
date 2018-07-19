@@ -9,7 +9,6 @@ export PF_PAGE_BUILDER=jekyll
 # Email used to notify users release is available
 EMAIL_PTNFLY=patternfly@redhat.com
 EMAIL_PTNFLY_ANGULAR=patternfly-angular@redhat.com
-EMAIL_RCUE=patternfly@redhat.com
 
 # Git properties
 GIT_USER_NAME=patternfly-build
@@ -50,19 +49,16 @@ REPO_NAME_PTNFLY_NG=patternfly-ng
 REPO_NAME_PTNFLY_ORG=patternfly-org
 REPO_NAME_PTNFLY_ENG_RELEASE=patternfly-eng-release
 REPO_NAME_PTNFLY_WC=patternfly-webcomponents
-REPO_NAME_RCUE=rcue
 
 # Repo owners
 REPO_OWNER_PTNFLY=patternfly
 REPO_OWNER_PTNFLY_WC=patternfly-webcomponents
-REPO_OWNER_RCUE=redhat-rcue
 
 # Set flag indicating scripts are running against a fork to prevent accidental merging, npm publish, etc.
 if [ -n "$TRAVIS" -a -n "$TRAVIS_REPO_SLUG" ]; then
   REPO_OWNER=`dirname $TRAVIS_REPO_SLUG`
   if ! [ "$REPO_OWNER" = "$REPO_OWNER_PTNFLY" -o \
-         "$REPO_OWNER" = "$REPO_OWNER_PTNFLY_WC" -o \
-         "$REPO_OWNER" = "$REPO_OWNER_RCUE" ]; then
+         "$REPO_OWNER" = "$REPO_OWNER_PTNFLY_WC" ]; then
     REPO_FORK=1
   fi
 fi
@@ -76,7 +72,6 @@ if [ -n "$REPO_FORK" ]; then
   # Set fork owner for repo slugs (i.e., owner_name/repo_name)
   REPO_OWNER_PTNFLY=$REPO_OWNER
   REPO_OWNER_PTNFLY_WC=$REPO_OWNER
-  REPO_OWNER_RCUE=$REPO_OWNER
 
   # Email used to notify users release is available
   EMAIL_PTNFLY=$REPO_OWNER@redhat.com
@@ -100,7 +95,6 @@ REPO_SLUG_PTNFLY_ENG_RELEASE=$REPO_OWNER_PTNFLY/patternfly-eng-release
 REPO_SLUG_PTNFLY_NG=$REPO_OWNER_PTNFLY/patternfly-ng
 REPO_SLUG_PTNFLY_ORG=$REPO_OWNER_PTNFLY/patternfly-org
 REPO_SLUG_PTNFLY_WC=$REPO_OWNER_PTNFLY_WC/patternfly-webcomponents
-REPO_SLUG_RCUE=$REPO_OWNER_RCUE/rcue
 
 # Repo URLs
 REPO_URL_PTNFLY="github.com/$REPO_SLUG_PTNFLY.git"

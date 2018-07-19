@@ -42,7 +42,7 @@ cat <<- EEOOFF
     When the release is complete, the custom Git tag is removed from GitHub. The custom tag is created using a clone so
     it won't persist in your local repo.
 
-    If the release is successful, RCUE, Angular PatternFly, and PatternFly Org will be released as well. This is done
+    If the release is successful, Angular PatternFly and PatternFly Org will be released as well. This is done
     by creating a Git tag for the next repo to be built.
 
     If 3.15.0 is provided as a version number; for example, the release will be tagged as v3.15.0.
@@ -61,7 +61,6 @@ cat <<- EEOOFF
     e       PatternFly Eng Release (DISABLED for semantic release)
     o       PatternFly Org
     p       PatternFly (DISABLED for semantic release)
-    r       RCUE
     v       The version number (e.g., 3.15.0)
     w       PatternFly Web Components (DISABLED for semantic release)
     x       Patternfly NG (DISABLED for semantic release)
@@ -92,7 +91,6 @@ EEOOFF
       n) RELEASE_NEXT=1;;
       o) PTNFLY_ORG=1;;
       p) PTNFLY=1; usage; exit1;; # DISABLED
-      r) RCUE=1;;
       s) SKIP_CHAINED_RELEASE=1;;
       v) VERSION=$OPTARG;;
       w) PTNFLY_WC=1; usage; exit1;; # DISABLED
@@ -122,10 +120,6 @@ EEOOFF
     BUILD_DIR=$TMP_DIR/patternfly
     REPO_SLUG=$REPO_SLUG_PTNFLY
   fi
-  if [ -n "$RCUE" ]; then
-    BUILD_DIR=$TMP_DIR/rcue
-    REPO_SLUG=$REPO_SLUG_RCUE
-  fi
   if [ -n "$PTNFLY_WC" ]; then
     BUILD_DIR=$TMP_DIR/patternfly-webcomponents
     REPO_SLUG=$REPO_SLUG_PTNFLY_WC
@@ -142,7 +136,7 @@ EEOOFF
 
   # Release PF Next branches
   if [ -n "$RELEASE_NEXT" ]; then
-    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" ]; then
+    if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
       BRANCH=$NEXT_BRANCH
     fi
   fi

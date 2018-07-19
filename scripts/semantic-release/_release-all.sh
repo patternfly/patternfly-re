@@ -81,7 +81,6 @@ cat <<- EEOOFF
     OPTIONS:
     h       Display this message (default)
     o       PatternFly Org
-    r       RCUE
 
 EEOOFF
 }
@@ -100,8 +99,6 @@ EEOOFF
       h) usage; exit 0;;
       o) PTNFLY_ORG=1;
          SWITCH=-o;;
-      r) RCUE=1;
-         SWITCH=-r;;
       \?) usage; exit 1;;
     esac
   done
@@ -111,9 +108,6 @@ EEOOFF
 
   if [ -n "$PTNFLY_ORG" ]; then
     add_bump_tag $REPO_NAME_PTNFLY_ORG $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ORG
-  fi
-  if [ -n "$RCUE" ]; then
-    add_bump_tag $REPO_NAME_RCUE $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_RCUE
   fi
 
   # Restore local branch for other scripts
