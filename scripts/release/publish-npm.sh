@@ -68,7 +68,6 @@ cat <<- EEOOFF
     a       Angular PatternFly
     e       PatternFly Eng Release
     p       PatternFly
-    r       RCUE
     w       PatternFly Web Components
     x       PatternFly NG
 
@@ -101,9 +100,6 @@ EEOOFF
       p) BUILD_DIR=$TMP_DIR/patternfly;
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
       s) SKIP_SETUP=1;;
-      r) BRANCH=$RELEASE_BRANCH
-         BUILD_DIR=$TMP_DIR/rcue;
-         REPO_SLUG=$REPO_SLUG_RCUE;;
       w) BUILD_DIR=$TMP_DIR/patternfly-webcomponents;
          REPO_SLUG=$REPO_SLUG_PTNFLY_WC;;
       x) BUILD_DIR=$TMP_DIR/patternfly-ng;

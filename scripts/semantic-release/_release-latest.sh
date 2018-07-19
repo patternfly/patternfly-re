@@ -34,7 +34,6 @@ cat <<- EEOOFF
     OPTIONS:
     h       Display this message (default)
     o       PatternFly Org
-    r       RCUE
 
 EEOOFF
 }
@@ -53,8 +52,6 @@ EEOOFF
       h) usage; exit 0;;
       o) PTNFLY_ORG=1;
          SWITCH=-o;;
-      r) RCUE=1;
-         SWITCH=-r;;
       \?) usage; exit 1;;
     esac
   done

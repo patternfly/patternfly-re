@@ -4,7 +4,7 @@ default()
 {
   PATH=/usr/local/bin:/usr/bin:/bin:$PATH
   export PATH
-  
+
   SCRIPT=`basename $0`
   SCRIPT_DIR=`dirname $0`
   SCRIPT_DIR=`cd $SCRIPT_DIR; pwd`
@@ -68,7 +68,7 @@ fetch_notes()
 usage()
 {
 cat <<- EEOOFF
-    This script will send a release notice to the PatternFly, Angular PatternFly, and RCUE mailling lists.
+    This script will send a release notice to the PatternFly and Angular PatternFly mailling lists.
 
     After publishing a release notes via GitHub, the script will pull the markup using GitHub APIs. The markup is then
     added to the body of the outgoing message.
@@ -84,7 +84,6 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     p       PatternFly
-    r       RCUE
     v       The version number (e.g., 3.15.0)
 
     SPECIAL OPTIONS:
@@ -112,9 +111,6 @@ EEOOFF
       p) EMAIL="$EMAIL_PTNFLY";
          SUBJECT="PatternFly";
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
-      r) EMAIL="$EMAIL_RCUE";
-         SUBJECT="RCUE";
-         REPO_SLUG=$REPO_SLUG_RCUE;;
       v) VERSION=$OPTARG;;
       \?) usage; exit 1;;
     esac

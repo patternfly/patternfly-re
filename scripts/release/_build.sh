@@ -105,7 +105,7 @@ cat <<- EEOOFF
 
     If a custom Git tag has been created to publish a release, the Git tag will be deleted first. Then, the appropriate
     scripts will be called to bump version numbers and publish the repo. Finally, a custom tag will be created to kick
-    off the release for the Angular PatternFly, PatternFly Org and RCUE repos.
+    off the release for the Angular PatternFly and PatternFly Org repos.
 
     Note: Intended for use with Travis only.
 
@@ -121,7 +121,6 @@ cat <<- EEOOFF
     e       PatternFly Eng Release
     o       PatternFly Org
     p       PatternFly
-    r       RCUE
     w       PatternFly Web Components
     x       Patternfly NG
 
@@ -152,9 +151,6 @@ EEOOFF
       p) PTNFLY=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY;
          SWITCH=p;;
-      r) RCUE=1;
-         REPO_SLUG=$REPO_SLUG_RCUE;
-         SWITCH=r;;
       w) PTNFLY_WC=1;
          REPO_SLUG=$REPO_SLUG_PTNFLY_WC;
          SWITCH=w;;
@@ -200,7 +196,6 @@ EEOOFF
   if [ -z "$SKIP_CHAINED_RELEASE" ]; then
     if [ -n "$PTNFLY" ]; then
       add_bump_tag $REPO_NAME_PTNFLY_ORG $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ORG
-      add_bump_tag $REPO_NAME_RCUE $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_RCUE
     #elif [ -n "$PTNFLY_ANGULAR" ]; then
     #  add_bump_tag $REPO_NAME_PTNFLY_ORG $RELEASE_BRANCH $RELEASE_BRANCH-$REPO_NAME_PTNFLY_ORG
     elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
@@ -209,7 +204,5 @@ EEOOFF
   fi
 
   # Generate release notes
-  if [ -n "$RCUE" ]; then
-    sh -x $SCRIPT_DIR/_release-notes.sh -v $VERSION -$SWITCH
-  fi
+  sh -x $SCRIPT_DIR/_release-notes.sh -v $VERSION -$SWITCH
 }

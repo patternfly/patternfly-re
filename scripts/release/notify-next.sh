@@ -4,7 +4,7 @@ default()
 {
   PATH=/usr/local/bin:/usr/bin:/bin:$PATH
   export PATH
-  
+
   SCRIPT=`basename $0`
   SCRIPT_DIR=`dirname $0`
   SCRIPT_DIR=`cd $SCRIPT_DIR; pwd`
@@ -58,7 +58,7 @@ EEOOFF
 usage()
 {
 cat <<- EEOOFF
-    This script will send a PF 'next' release notice to the PatternFly, Angular PatternFly, and RCUE mailling lists.
+    This script will send a PF 'next' release notice to the PatternFly and Angular PatternFly mailling lists.
 
     Note: You must configure your system to tell it where to send email. If you haven't done so, see:
     http://codana.me/2014/11/23/sending-gmail-from-os-x-yosemite-terminal
@@ -71,7 +71,6 @@ cat <<- EEOOFF
     h       Display this message (default)
     a       Angular PatternFly
     p       PatternFly
-    r       RCUE
     v       The version number (e.g., 3.15.0)
 
     SPECIAL OPTIONS:
@@ -99,9 +98,6 @@ EEOOFF
       p) EMAIL="$EMAIL_PTNFLY";
          SUBJECT="PatternFly";
          REPO_SLUG=$REPO_SLUG_PTNFLY;;
-      r) EMAIL="$EMAIL_RCUE";
-         SUBJECT="RCUE";
-         REPO_SLUG=$REPO_SLUG_RCUE;;
       v) VERSION=$OPTARG;;
       \?) usage; exit 1;;
     esac

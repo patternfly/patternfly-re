@@ -59,9 +59,6 @@ bump_bower()
 
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
     sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\",|" > $BOWER_JSON.tmp
-  elif [ -n "$RCUE" ]; then
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $BOWER_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $BOWER_JSON.tmp
   fi
   check $? "Version bump failure"
 
@@ -110,13 +107,6 @@ bump_package()
 
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
     sed "s|\"patternfly\": \".*|\"patternfly\": \"$PKG_PTNFLY\",|" > $PACKAGE_JSON.tmp
-  elif [ -n "$RCUE" ]; then
-    #sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    #sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" | \
-    #sed "s|\"patternfly-eng-release\":.*|\"patternfly-eng-release\": \"$PKG_PTNFLY_ENG_RELEASE\"|" > $PACKAGE_JSON.tmp
-
-    sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON | \
-    sed "s|\"patternfly\":.*|\"patternfly\": \"$PKG_PTNFLY\"|" > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_ENG_RELEASE" ]; then
     sed "s|\"version\":.*|\"version\": \"$VERSION\",|" $PACKAGE_JSON > $PACKAGE_JSON.tmp
   elif [ -n "$PTNFLY_WC" ]; then
@@ -250,7 +240,6 @@ cat <<- EEOOFF
     e       PatternFly Eng Release
     o       PatternFly Org
     p       PatternFly
-    r       RCUE
     v       The version number (e.g., 3.15.0)
     w       PatternFly Web Components
     x       Patternfly NG
@@ -314,7 +303,6 @@ verify()
       n) BRANCH_DIST=$NEXT_DIST_BRANCH;;
       o) PTNFLY_ORG=1;;
       p) PTNFLY=1;;
-      r) RCUE=1;;
       s) SKIP_SETUP=1;;
       v) VERSION=$OPTARG;
          BUMP_BRANCH=bump-v$VERSION;;
@@ -348,11 +336,6 @@ verify()
     BUILD_DIR=$TMP_DIR/patternfly
     REPO_SLUG=$REPO_SLUG_PTNFLY
     VERIFY_DIR="$TMP_DIR/patternfly-verify"
-  fi
-  if [ -n "$RCUE" ]; then
-    BUILD_DIR=$TMP_DIR/rcue
-    REPO_SLUG=$REPO_SLUG_RCUE
-    VERIFY_DIR="$TMP_DIR/rcue-verify"
   fi
   if [ -n "$PTNFLY_WC" ]; then
     BUILD_DIR=$TMP_DIR/patternfly-webcomponents
@@ -389,7 +372,7 @@ verify()
   build_test
   regression_test
 
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" -o -n "$PTNFLY_WC" ]; then
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$PTNFLY_WC" ]; then
     shrinkwrap
   fi
 
