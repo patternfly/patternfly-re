@@ -131,9 +131,12 @@ verify()
   $SCRIPT_DIR/_regression-test.sh
   check $? "Regression test failure"
 
-  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
-    shrinkwrap
-  fi
+  # It's strongly discouraged for library authors to publish shrinkwrap.json, since that would prevent end users from
+  # having control over transitive dependency updates. See https://docs.npmjs.com/files/shrinkwrap.json
+  #
+  # if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+  #  shrinkwrap
+  # fi
 
   verify
   publish_branch
