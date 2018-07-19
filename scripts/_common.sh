@@ -144,14 +144,16 @@ git_setup()
 
 # Shrink wrap npm and run vulnerability test
 #
+# The recommended use-case for npm-shrinkwrap.json is applications deployed through the publishing process on the
+# registry: for example, daemons and command-line tools intended as global installs or devDependencies. It's strongly
+# discouraged for library authors to publish this file, since that would prevent end users from having control over
+# transitive dependency updates.
+#
+# See https://docs.npmjs.com/files/shrinkwrap.json
 shrinkwrap()
 {
   echo "*** Shrink wrapping $SHRINKWRAP_JSON"
   cd $BUILD_DIR
-
-  if [ -s "$PACKAGE_LOCK_JSON" -o -n "$PTNFLY_ENG_RELEASE" ]; then
-    return
-  fi
 
   # Only include production dependencies with shrinkwrap
   npm prune --production
