@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "dependencies": {},
   "devDependencies": {
-    "semantic-release": "^6.3.6"
+    "semantic-release": "^15.8.1"
   },
   "description": "A set of release engineering scripts for PatternFly, PatternFly NG, Angular PatternFly, PatternFly Org, and RCUE.",
   "repository": {
