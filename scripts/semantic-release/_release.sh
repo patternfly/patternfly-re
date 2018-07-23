@@ -139,5 +139,9 @@ verify()
   # fi
 
   verify
-  publish_branch
+
+  # Skip master-dist build in favor of gh-pages -- publish only for forked repos
+  if [ "$TRAVIS_REPO_SLUG" != "$REPO_SLUG_PTNFLY_NG" ]; then
+    publish_branch
+  fi
 }
