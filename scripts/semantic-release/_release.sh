@@ -134,14 +134,10 @@ verify()
   # It's strongly discouraged for library authors to publish shrinkwrap.json, since that would prevent end users from
   # having control over transitive dependency updates. See https://docs.npmjs.com/files/shrinkwrap.json
   #
-  # if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
-  #  shrinkwrap
-  # fi
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" ]; then
+    shrinkwrap
+  fi
 
   verify
-
-  # Skip master-dist build in favor of gh-pages -- publish only for forked repos
-  if [ "$TRAVIS_REPO_SLUG" != "$REPO_SLUG_PTNFLY_NG" ]; then
-    publish_branch
-  fi
+  publish_branch
 }
