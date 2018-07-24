@@ -392,9 +392,9 @@ verify()
   # It's strongly discouraged for library authors to publish shrinkwrap.json, since that would prevent end users from
   # having control over transitive dependency updates. See https://docs.npmjs.com/files/shrinkwrap.json
   #
-  # if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" -o -n "$PTNFLY_WC" ]; then
-  #  shrinkwrap
-  # fi
+  if [ -n "$PTNFLY" -o -n "$PTNFLY_ANGULAR" -o -n "$RCUE" -o -n "$PTNFLY_WC" ]; then
+    shrinkwrap
+  fi
 
   commit # Changes must be committed prior to bower verify step
   verify $VERIFY_DIR $BUILD_DIR
