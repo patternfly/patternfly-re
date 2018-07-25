@@ -128,7 +128,7 @@ verify()
   #  build_aot
   #fi
 
-  $SCRIPT_DIR/_regression-test.sh
+  sh -x $SCRIPT_DIR/_regression-test.sh
   check $? "Regression test failure"
 
   # It's strongly discouraged for library authors to publish shrinkwrap.json, since that would prevent end users from
