@@ -114,7 +114,7 @@ publish_npm()
   WHOAMI=`npm whoami`
   if [ "$WHOAMI" != "patternfly-build" -a -n "$NPM_USER" -a -n "$NPM_PWD" ]; then
     printf "$NPM_USER\n$NPM_PWD\n$NPM_USER@redhat.com" | npm login
-    check $? "npm login failure"
+    check $? "npm login failure" warn
   fi
 
   JUNK=`grep '"name": "@' package.json`

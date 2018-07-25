@@ -42,7 +42,8 @@ commit()
   fi
   if [ -n "$COMMIT_CHANGES" ]; then
     # For semantic release, revert undesirable changes to package.json and package-lock
-    git checkout $PACKAGE_JSON $PACKAGE_LOCK_JSON
+    git checkout $PACKAGE_JSON
+    git checkout $PACKAGE_LOCK_JSON
 
     git add -A
     if [ -n "SEPARATE_COMMITS" ]; then
