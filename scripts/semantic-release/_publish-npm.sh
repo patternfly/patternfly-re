@@ -32,18 +32,7 @@ npm_login()
   WHOAMI=`npm whoami`
   if [ "$WHOAMI" != "patternfly-build" -a -n "$NPM_USER" -a -n "$NPM_PWD" ]; then
     printf "$NPM_USER\n$NPM_PWD\n$NPM_USER@redhat.com" | npm login
-    STATUS="$?"
-    check $STATUS "npm login failure" warn
-
-    # Try installing a version of npm that works with progmatic login
-    if [ "$STATUS" != 0 ]; then
-      NODE_VERSION=`node --version | awk -F"." '{print $1}'`
-      NPM_VERSION=`npm --version`
-      if [ "$NODE_VERSION" = "v8" -a "$NPM_VERSION" != "5.4.0" ]; then
-        npm i -g npm@5.4.0
-        npm_login
-      fi
-    fi
+    check $? "npm login failure" warn
   fi
 }
 
