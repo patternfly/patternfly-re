@@ -19,6 +19,34 @@ default()
   BUILD_DIR=$TRAVIS_BUILD_DIR
 }
 
+# npm login
+#
+npm_login()
+{
+  NPM_FILE=".npmrc"
+  if [ -n "$NPM_TOKEN" -a ! -f "$NPM_FILE" ]; then
+    echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > $NPM_FILE
+  fi
+
+  # Log into npm if not already logged in
+  WHOAMI=`npm whoami`
+  if [ "$WHOAMI" != "patternfly-build" -a -n "$NPM_USER" -a -n "$NPM_PWD" ]; then
+    printf "$NPM_USER\n$NPM_PWD\n$NPM_USER@redhat.com" | npm login
+    STATUS="$?"
+    check $STATUS "npm login failure" warn
+
+    # Try installing a version of npm that works with progmatic login
+    if [ "$STATUS" != 0 ]; then
+      NODE_VERSION=`node --version | awk -F"." '{print $1}'`
+      NPM_VERSION=`npm --version`
+      if [ "$NODE_VERSION" = "v8" -a "$NPM_VERSION" != "5.4.0" ]; then
+        npm i -g npm@5.4.0
+        npm_login
+      fi
+    fi
+  fi
+}
+
 # Check prerequisites before continuing
 #
 prereqs()
@@ -105,17 +133,7 @@ publish_npm()
   echo "*** Publishing npm"
   cd $BUILD_DIR
 
-  NPM_FILE=".npmrc"
-  if [ -n "$NPM_TOKEN" -a ! -f "$NPM_FILE" ]; then
-    echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > $NPM_FILE
-  fi
-
-  # Log into npm if not already logged in
-  WHOAMI=`npm whoami`
-  if [ "$WHOAMI" != "patternfly-build" -a -n "$NPM_USER" -a -n "$NPM_PWD" ]; then
-    printf "$NPM_USER\n$NPM_PWD\n$NPM_USER@redhat.com" | npm login
-    check $? "npm login failure" warn
-  fi
+  npm_login
 
   JUNK=`grep '"name": "@' package.json`
   if [ "$?" -eq 0 ]; then
