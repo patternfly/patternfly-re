@@ -29,10 +29,24 @@ add_bump_tag()
   echo "*** Adding version bump tag"
   cd $BUILD_DIR
 
-  # Add tag to kick off version bump
+  # Fetch remote repo and checkout branch
   git fetch $1 $2:$3 # <remote-branch>:<local-branch>
   check $? "git fetch failure"
   git checkout $3
+
+  # Check if release tag exists
+  git tag | grep "^$RELEASE_TAG_PREFIX$VERSION$"
+  if [ $? -eq 0 ]; then
+    check 1 "Tag $RELEASE_TAG_PREFIX$VERSION exists. Do not release!"
+  fi
+
+  # Check if bump tag exists (i.e., if build has already been started)
+  git tag | grep "^$BUMP_CHAIN_TAG_PREFIX$VERSION$"
+  if [ $? -eq 0 ]; then
+    check 1 "Tag $BUMP_CHAIN_TAG_PREFIX$VERSION exists. Do not release!"
+  fi
+
+  # Add tag to kick off version bump
   git tag $BUMP_CHAIN_TAG_PREFIX$VERSION -f
   git push $1 tag $BUMP_CHAIN_TAG_PREFIX$VERSION
   check $? "git push tag failure"
@@ -60,11 +74,6 @@ prereqs()
     sed 's|\"||g' | \
     sed 's|,||g' | \
     sed 's| *||g'`
-
-  git tag | grep "^$RELEASE_TAG_PREFIX$VERSION$"
-  if [ $? -eq 0 ]; then
-    check 1 "Tag $RELEASE_TAG_PREFIX$VERSION exists. Do not release!"
-  fi
 }
 
 usage()
