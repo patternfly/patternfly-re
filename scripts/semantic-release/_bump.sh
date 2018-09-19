@@ -137,6 +137,9 @@ cat <<- EEOOFF
     p       PatternFly
     v       The version number (e.g., 3.15.0)
 
+    SPECIAL OPTIONS:
+    s       Skip publishing branch (for use with latest semantic release prepare plugins)
+
 EEOOFF
 }
 
@@ -155,13 +158,14 @@ verify()
     exit 1
   fi
 
-  while getopts hapv: c; do
+  while getopts hapsv: c; do
     case $c in
       h) usage; exit 0;;
       a) PTNFLY_ANGULAR=1;
          SWITCH=-a;;
       p) PTNFLY=1;
          SWITCH=-p;;
+      s) SKIP_PUBLISH_BRANCH=1;;
       v) VERSION=$OPTARG;;
       \?) usage; exit 1;;
     esac
@@ -171,6 +175,10 @@ verify()
   bump_bower
   bump_js
   verify
-  publish_branch
+
+  if [ -z "$SKIP_PUBLISH_BRANCH" ]; then
+    publish_branch
+  fi
+
   skip_npm_publish
 }
