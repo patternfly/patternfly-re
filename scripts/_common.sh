@@ -92,10 +92,11 @@ build_test()
     npm test
     check $? "npm test failure"
   fi
-  if [ -s "$NSP" ]; then
-    node $NSP check --output summary
-    check $? "package.json vulnerability found" warn
-  fi
+
+  # if [ -s "$NSP" ]; then
+  #  node $NSP check --output summary
+  #  check $? "package.json vulnerability found" warn
+  # fi
 }
 
 # Check errors
@@ -164,8 +165,15 @@ shrinkwrap()
   # Restore dependencies
   npm install
 
-  if [ -s "$NSP" -a -s "$SHRINKWRAP_JSON" ]; then
-    node $NSP --shrinkwrap npm-shrinkwrap.json check --output summary
-    check $? "shrinkwrap vulnerability found" warn
-  fi
+  # "The Node Security Platform service has been depreciated since 30 September this year.
+  #
+  # Beginning with npm@6, a new command, npm audit, recursively analyzes your dependency trees to identify
+  # specifically what’s insecure, recommend a replacement, or fix it automatically with npm audit fix.
+  #
+  # Note that --audit-level high flag only works for NPM versions > v6.4.0"
+  #
+  # if [ -s "$NSP" -a -s "$SHRINKWRAP_JSON" ]; then
+  #  node $NSP --shrinkwrap npm-shrinkwrap.json check --output summary
+  #  check $? "shrinkwrap vulnerability found" warn
+  # fi
 }
